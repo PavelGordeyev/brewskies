@@ -1,5 +1,7 @@
 venv/
 
+flaskr/.DS_Store
+.DS_Store
 *.pyc
 __pycache__/
 
