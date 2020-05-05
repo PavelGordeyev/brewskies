@@ -3,6 +3,18 @@ from flask import request, redirect
 
 webapp = Flask(__name__)
 
-@webapp.route('/hello')
+@webapp.route('/')
 def index():
+	return "Hello World!"
+
+@webapp.route('/beers')
+def beers():
+	return "Hello World!"
+
+@webapp.route('/breweries')
+def breweries():
+	return "Hello World!"
+
+@webapp.route('/ratings')
+def ratings():
 	return "Hello World!"
