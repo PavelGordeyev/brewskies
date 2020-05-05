@@ -14,6 +14,19 @@ class Ingredient(object):
 		self.name = name
 		self.unit = unit
 
+class StarRow(object):
+	def __init__(self, star, name, brewer, beer_type):
+		self.star = star
+		self.name = name
+		self.brewer = brewer
+		self.beer_type = beer_type):
+
+class StarTable(Table):
+	star = Col('Avg Stars')
+	name = Col('Beer')
+	brewer = Col('Brewer')
+	beer_type = Col('Beer Type')
+
 @app.route('/')
 def index():
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
@@ -48,7 +61,13 @@ def brewers():
 
 @app.route('/ratings')
 def ratings():
-	return render_template('star_ratings.html', title='Ratings')
+
+	starrows = [StarRow('5', 'Milwaukee\'s best', 'Miller Brewing Company', 'Pale Lager'),
+				StarRow('5', 'Bud Light Lime', 'AB Inbev', 'Gross Fake Fruit Beer')]
+	
+	star_table = StarTable(starrows)
+
+	return render_template('star_ratings.html', title='Ratings', star_table='star_table')
 
 @app.route('/add')
 def add():
