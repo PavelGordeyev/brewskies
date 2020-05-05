@@ -88,7 +88,7 @@ def ratings():
 	
 	star_table = StarTable(starrows)
 
-	return render_template('star_ratings.html', title='Ratings', star_table='star_table')
+	return render_template('star_ratings.html', title='Ratings', star_table=star_table)
 
 @app.route('/add')
 def add():
