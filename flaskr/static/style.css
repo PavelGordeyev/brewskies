@@ -1,0 +1,21 @@
+*{
+	box-sizing: border-box;
+	font-family:calibri,verdana,arial;
+	line-height: 1.5;
+}
+
+body{
+}
+
+#searchForm{
+	position: relative;
+	margin: 0 auto;
+	width: 600px;
+}
+
+#searchText{
+	width: 400px;
+	display: inline-block;
+}
+
+

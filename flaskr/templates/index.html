@@ -1,16 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<h1>THIS IS OUR HOME(brew) PAGE</h1>
-<br>
-<form action="/search" method="get" name="search">
-	<input type="text" id="searchText" aria-describedby="searchHelp" placeholder="Enter a beer, beer style or brewery" autocomplete="off">
-	<select id="category" name="category">
-		<option value="beer">Beer</option>
-		<option value="beer_style">Beer_Style</option>
-		<option value="brewery">Brewery</option>
-	</select>
-	<input type="submit" value="Search">
-</form>
-</br>
+<article>
+	<h1>HOME(brew) page</h1>
+</article>
 {% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<article>
+		<h1>Welcome to the Brewsky Catalog!</h1>
+		<p>Go ahead and search for a beer, style or brewery below, and we'll see if we can get some info for you!</p>
+		<br>
+</article>
+<article id="searchForm">
+	<form action="/search" method="get" name="search">
+		<div class="form-group">
+			<input type="text" id="searchText" aria-describedby="searchHelp" placeholder="Enter a beer, style or brewery" autocomplete="off">
+			<select id="category" name="category">
+				<option value="beer">Beer</option>
+				<option value="beer_style">Beer_Style</option>
+				<option value="brewery">Brewery</option>
+			</select>
+		</div>
+		<button id="submit" type="submit" class="btn btn-primary">Submit</button>
+	</form>
+</article>
+</br>
+{% endblock %}
