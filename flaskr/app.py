@@ -1,7 +1,18 @@
 from flask import Flask, render_template
 from flask import request, redirect
+from flask_table import Table, Col
 
 app = Flask(__name__)
+
+class IngredientsTable(Table):
+    name = Col('Name')
+    unit = Col('Unit')
+
+# Define ingredients
+class Ingredient(object):
+	def __init__(self, name, unit):
+		self.name = name
+		self.unit = unit
 
 @app.route('/')
 def index():
@@ -17,7 +28,15 @@ def beers():
 	brewery = "Heinken"
 	brewer_location = "Amsterdam"
 	rating = 4.3
-	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewery=brewery,brewer_location=brewer_location,rating=rating)
+
+	ingredients = [Ingredient('water', 'gallons'),
+					Ingredient('hops', 'oz'),
+         			Ingredient('barley', 'LBS'),
+         			Ingredient('yeast',"1 packet")]
+	
+	ing_table = IngredientsTable(ingredients)
+
+	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewery=brewery,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
 
 @app.route('/beerTypes')
 def beerTypes():
