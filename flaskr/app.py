@@ -19,13 +19,21 @@ def beers():
 	rating = 4.3
 	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewery=brewery,brewer_location=brewer_location,rating=rating)
 
-@app.route('/breweries')
-def breweries():
-	return render_template('breweries.html', title='Breweries')
+@app.route('/beerTypes')
+def beerTypes():
+	return render_template('beer_types.html', title='Beer Types')
+
+@app.route('/brewers')
+def brewers():
+	return render_template('brewers.html', title='Brewers')
 
 @app.route('/ratings')
 def ratings():
-	return render_template('ratings.html', title='Brewsky Ratings')
+	return render_template('star_ratings.html', title='Ratings')
+
+@app.route('/add')
+def add():
+	return render_template('add.html', title='Add elements')
 
 @app.errorhandler(404)
 def pageNotFound(error):
