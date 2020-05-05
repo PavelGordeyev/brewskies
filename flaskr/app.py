@@ -19,7 +19,8 @@ class StarRow(object):
 		self.star = star
 		self.name = name
 		self.brewer = brewer
-		self.beer_type = beer_type)
+		self.beer_type = beer_type
+
 
 class StarTable(Table):
 	star = Col('Avg Stars')
@@ -87,7 +88,7 @@ def ratings():
 	
 	star_table = StarTable(starrows)
 
-	return render_template('star_ratings.html', title='Ratings', star_table='star_table')
+	return render_template('star_ratings.html', title='Ratings', star_table=star_table)
 
 @app.route('/add')
 def add():
