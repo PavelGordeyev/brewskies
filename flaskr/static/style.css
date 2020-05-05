@@ -42,11 +42,37 @@ nav li a, a:visited{
 }
 
 nav li:hover{
-	
-	
 	color: black !important;
 }
 
+table{
+	width: 25%;
+	border-collapse: collapse;
+	border: 2px solid black;
+}
+
+thead,td,tr,th{
+	border: 1px solid black;
+}
+
+thead{
+	height: 15px;
+	text-align: center;
+	vertical-align: center;
+	padding: 10px;
+}
+
+thead tr{
+	background-color: #000;
+	color: #FFF;
+}
+
+td{
+	height: 13px;
+	text-align: center;
+	vertical-align: center;
+	padding: 10px;
+}
 
 #searchForm{
 	position: relative;

@@ -19,7 +19,7 @@ class StarRow(object):
 		self.star = star
 		self.name = name
 		self.brewer = brewer
-		self.beer_type = beer_type):
+		self.beer_type = beer_type
 
 class StarTable(Table):
 	star = Col('Avg Stars')
