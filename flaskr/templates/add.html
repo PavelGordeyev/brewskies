@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h1> Add Elements to Database </h1>
+<br></br>
+<form method="post">
+	<h3>Add Beer</h3>
+	<label for="name">Beer Name</label>
+	<input name="name" id="name" value="" required>
+	<label for="brewer">Brewer Name</label>
+	<input name="brewer" id="brewer" value="" required>
+	<label for="type">Beer Type</label>
+	<input name="type" id="type" value="" required>
+	<input type="submit" value="Insert to DB">
+</form>
+
+<form method="post">
+	<h3>Add Brewer</h3>
+	<label for="name">Brewer Name</label>
+	<input name="name" id="name" value="" required>
+	<label for="country">Country Name</label>
+	<input name="country" id="country" value="" required>
+	<input type="submit" value="Insert to DB">
+</form>
+
+<form method="post">
+	<h3>Add Beer Type</h3>
+	<label for="name">Beer Type Name</label>
+	<input name="name" id="name" value="" required>
+	<label for="origin">Origin Name</label>
+	<input name="origin" id="origin" value="" required>
+	<label for="family">Origin Name</label>
+	<input name="family" id="family" value="" required>
+	<input type="submit" value="Insert to DB">
+</form>
+
+<form method="post">
+	<h3>Add Ingredient</h3>
+	<label for="name">Ingredient Name</label>
+	<input name="name" id="name" value="" required>
+	<label for="unit">Origin Name</label>
+	<input name="unit" id="unit" value="" required>
+	<input type="submit" value="Insert to DB">
+</form>
+
+{% endblock %}
