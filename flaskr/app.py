@@ -66,8 +66,8 @@ def home():
 
 @app.route('/beers')
 def beers():
-	beer_name = "Heinken"
-	brewer = "Heinken"
+	beer_name = "Heineken"
+	brewer = "Heineken"
 	brewer_location = "Amsterdam"
 	rating = 4.3
 

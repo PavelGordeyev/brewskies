@@ -7,11 +7,11 @@
 		<br>
 </article>
 <article id="beerInfo">
-	<h3>{{ beer_name }}</h3>
+	<h3>Name: {{ beer_name }}</h3>
 	<br>
-	<h3>{{ brewer }}</h3>
+	<h3>Brewer: {{ brewer }}</h3>
 	<br>
-	<h2>{{ brewer_location }}</h2>
+	<h2>Locale: {{ brewer_location }}</h2>
 	<br>
 	<aside>
 		{{ ing_table }}
@@ -19,7 +19,7 @@
 	<br>
 	<h2>Rating: {{ rating }}</h2>
 	<aside id="ratingForm">
-		<p> Submit a ranking of the beer:</p>
+		<p>Submit a ranking of the beer:</p>
 		<form action="/search" method="post" name="ratingPost">
 			<div class="form-group">
 				<select id="rating" name="rating">
