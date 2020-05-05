@@ -5,16 +5,16 @@ webapp = Flask(__name__)
 
 @webapp.route('/')
 def index():
-	return "Hello World!"
+	return render_template('index.html', title='Home')
 
 @webapp.route('/beers')
 def beers():
-	return "Hello World!"
+	return render_template('brewskies.html', title='Brewskies')
 
 @webapp.route('/breweries')
 def breweries():
-	return "Hello World!"
+	return render_template('breweries.html', title='Home')
 
 @webapp.route('/ratings')
 def ratings():
-	return "Hello World!"
+	return render_template('ratings.html', title='Brewsky Ratings')
