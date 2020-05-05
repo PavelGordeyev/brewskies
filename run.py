@@ -1,1 +1,1 @@
-from flaskr.webapp import webapp
+from flaskr.app import app
