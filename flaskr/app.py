@@ -26,6 +26,17 @@ class StarTable(Table):
 	name = Col('Beer')
 	brewer = Col('Brewer')
 	beer_type = Col('Beer Type')
+	
+# Define beers
+class BeersTable(Table):
+	name = Col('Name')
+	beerType = Col('Style')
+
+class Beer(object):
+	def __init__(self, name, beerType):
+		self.name = name
+		self.beerType = beerType
+
 
 @app.route('/')
 def index():
@@ -38,7 +49,7 @@ def home():
 @app.route('/beers')
 def beers():
 	beer_name = "Heinken"
-	brewery = "Heinken"
+	brewer = "Heinken"
 	brewer_location = "Amsterdam"
 	rating = 4.3
 
@@ -49,7 +60,7 @@ def beers():
 	
 	ing_table = IngredientsTable(ingredients)
 
-	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewery=brewery,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
+	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewer=brewer,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
 
 @app.route('/beerTypes')
 def beerTypes():
@@ -57,7 +68,16 @@ def beerTypes():
 
 @app.route('/brewers')
 def brewers():
-	return render_template('brewers.html', title='Brewers')
+	brewer = "Elysian"
+	brewer_location = "Seattle, WA"
+
+	beers = [Beer('Space Dust IPA','IPA'),
+			Beer('Contact Haze','Hazy IPA'),
+			Beer('SuperFuzz','Blood Orange Pale')]
+
+	beers_table = BeersTable(beers)
+
+	return render_template('brewers.html', title='Brewers',brewer=brewer,brewer_location=brewer_location,beers_table=beers_table)
 
 @app.route('/ratings')
 def ratings():
