@@ -14,13 +14,13 @@ class Ingredient(object):
 		self.name = name
 		self.unit = unit
 
+# Define ratings
 class StarRow(object):
 	def __init__(self, star, name, brewer, beer_type):
 		self.star = star
 		self.name = name
 		self.brewer = brewer
 		self.beer_type = beer_type
-
 
 class StarTable(Table):
 	star = Col('Avg Stars')
@@ -37,6 +37,23 @@ class Beer(object):
 	def __init__(self, name, beerType):
 		self.name = name
 		self.beerType = beerType
+
+# Define beer/brewers
+class BeerBrewersTable(Table):
+	beer = Col('Beer')
+	brewery = Col('Brewery')
+	location = Col('Location')
+
+class Brewer(object):
+	def __init__(self, name, location):
+		self.name = name
+		self.location = location
+
+class BeerBrewer(object):
+	def __init__(self, beer, brewery, location):
+		self.beer = beer
+		self.brewery = brewery
+		self.location = location
 
 
 @app.route('/')
@@ -65,7 +82,28 @@ def beers():
 
 @app.route('/beerTypes')
 def beerTypes():
-	return render_template('beer_types.html', title='Beer Types')
+
+	type_name = "IPA"
+	origin = "Deep back woods of Washington"
+	family = "Pale Ale"
+
+
+	beers = [Beer('Space Dust IPA','IPA'),
+			Beer('Lush','IPA'),
+			Beer('Hazelicous','IPA')]
+
+	brewers = [Brewer('Elysian','Seattle'),
+				Brewer('Fremont Brewing Company','Seattle'),
+				Brewer("Rueben's Brews",'Seattle')]
+
+
+	beer_brewer = [BeerBrewer(beers[0].name,brewers[0].name,brewers[0].location),
+					BeerBrewer(beers[1].name,brewers[1].name,brewers[1].location),
+					BeerBrewer(beers[2].name,brewers[2].name,brewers[2].location)]
+
+	beer_brewer_table = BeerBrewersTable(beer_brewer)
+
+	return render_template('beer_types.html', title='Beer Types', type_name=type_name,origin=origin,family=family,beer_brewer_table=beer_brewer_table)
 
 @app.route('/brewers')
 def brewers():
