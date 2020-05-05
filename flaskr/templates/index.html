@@ -1,7 +1,55 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<article>
-	<h1>HOME(brew) page</h1>
-</article>
+<h1>THIS IS OUR HOME(brew) PAGE</h1>
+<br>
+	<ul>
+		<li><a href="{{url_for('home')}}">Search Page</a>
+			<ul>
+				<li>Search bar</li>
+				<li>Drop down for beer, brewery, beer type</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('beers')}}">Beers Page</a>
+			<ul>
+				<li>Name (from beers table)</li>
+				<li>Brewer (from brewers table)</li>
+				<li>Brewer Location (from brewers table)</li>
+				<li>Ingredient List (from ingredient_boms)</li>
+				<li>avg Star Rating (from beer_ratings)</li>
+				<li>Enter New Rating (Insert into star_ratings)</li>
+				<li>Remove (removes the beer from beers table and associated ratings from star_ratings table)</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('brewers')}}">Brewers Page</a>
+			<ul>
+				<li>name (from brewers table)</li>
+				<li>country (from brewers table)</li>
+				<li>List of Beers by Type (from beers table and from beer_types table)</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('beer_types')}}">Beer Types Page</a>
+			<ul>
+				<li>Name (from beer_types table)</li>
+				<li>Origin (from beer_types table)</li>
+				<li>Family (from beer_types table)</li>
+				<li>Update Name (updates name of type in beer_types)</li>
+				<li>Example beers, listed with Brewery & Beer Name (from beers table and from brewers table)</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('star_ratings')}}">Star Rating Page</a>
+			<ul>
+				<li>list of beers (from beer table) ranked by avg star rating</li>
+				<li>beer list will show name (from beer table), brewer (from brewers table), type (from beer_types table)</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('add')}}">Add Page</a>
+			<ul>
+				<li>drop down for beers, brewers, beer_types, and ingredients</li>
+				<li>drop down dynamically changes form on page for different add type</li>
+				<li>submits INSERT to selected table</li>
+			</ul>
+		</li>
+	</ul>
+</br>
 {% endblock %}
