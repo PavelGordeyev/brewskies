@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<article>
+		<h1>Cheers!</h1>
+		<p>Here's your beer!</p>
+		<br>
+</article>
+<article id="beerInfo">
+	<h3>{{ beer_name }}</h3>
+	<br>
+	<h3>{{ brewer }}</h3>
+	<br>
+	<h2>{{ brewer_location }}</h2>
+	<br>
+	<br>
+	<h2>Rating: {{ rating }}</h2>
+	<aside id="ratingForm">
+		<p> Submit a ranking of the beer:</p>
+		<form action="/search" method="post" name="ratingPost">
+			<div class="form-group">
+				<select id="rating" name="rating">
+					<option value="1">Never Again</option>
+					<option value="2">Ehhh, Maybe</option>
+					<option value="3">Meh</option>
+					<option value="4">Mmmmm..</option>
+					<option value="5">OMG</option>
+				</select>
+			</div>
+			<button id="submit" type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</aside>
+	<br>
+	<form action="/removeBeer" method="post">
+		<button id="removeBeer" type="submit" class="btn btn-danger">Remove Beer</button>
+	</form>
+</article>
+
+
+</article>
+</br>
+{% endblock %}

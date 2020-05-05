@@ -13,7 +13,11 @@ def home():
 
 @app.route('/beers')
 def beers():
-	return render_template('brewskies.html', title='Brewskies')
+	beer_name = "Heinken"
+	brewery = "Heinken"
+	brewer_location = "Amsterdam"
+	rating = 4.3
+	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewery=brewery,brewer_location=brewer_location,rating=rating)
 
 @app.route('/breweries')
 def breweries():
