@@ -21,12 +21,13 @@ class StarRow(object):
 		self.brewer = brewer
 		self.beer_type = beer_type
 
+
 class StarTable(Table):
 	star = Col('Avg Stars')
 	name = Col('Beer')
 	brewer = Col('Brewer')
 	beer_type = Col('Beer Type')
-	
+
 # Define beers
 class BeersTable(Table):
 	name = Col('Name')
