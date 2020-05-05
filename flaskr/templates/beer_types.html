@@ -1,0 +1,24 @@
+<article id="beer_type">
+	<h3>{{ type_name }}</h3>
+	<br>
+	<h3>{{ origin }}</h3>
+	<br>
+	<h2>{{ family }}</h2>
+	<br>
+	<aside>
+		{{ beer_brewer_table }}
+	</aside>
+</article>
+<br><br>
+<h3> Update this Beer Type </h3>
+<br>
+<form method="post">
+	<label for="name">Beer Type Name</label>
+	<input name="name" id="name" value="" required>
+	<label for="origin">Origin Name</label>
+	<input name="origin" id="origin" value="" required>
+	<label for="family">Origin Name</label>
+	<input name="family" id="family" value="" required>
+	<input type="submit" value="Insert to DB">
+</form>
+<br>
