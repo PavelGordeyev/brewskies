@@ -1,6 +1,8 @@
 from flask import Flask, render_template
 from flask import request, redirect
 from flask_table import Table, Col
+import MySQLdb as mariadb
+from db_credentials import host, user, pw, db
 
 app = Flask(__name__)
 
@@ -55,6 +57,21 @@ class BeerBrewer(object):
 		self.brewery = brewery
 		self.location = location
 
+def execute_query(db_connection,query):
+
+	if db_connection is None:
+		print("No connection to the database found! Have you called connect_to_database() first?")
+		return None
+
+	if query is None or len(query.strip()) == 0:
+		print("query is empty! Please pass a SQL query in query")
+		return None
+	
+	cursor = db_connection.cursor()
+	cursor.execute(query)
+	db_connection.commit()
+	return cursor
+
 
 @app.route('/')
 def index():
@@ -62,6 +79,12 @@ def index():
 
 @app.route('/home')
 def home():
+
+	db_connection = mariadb.connect(host,user,pw,db)
+	query = "SELECT * FROM client"
+	result = execute_query(db_connection, query).fetchall()
+	print(result)
+	 
 	return render_template('home.html', title='Home')
 
 @app.route('/beers')
