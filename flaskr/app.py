@@ -13,7 +13,7 @@ def index():
 @app.route('/home')
 def home():
 
-	query = "SELECT * FROM client"
+	query = "SELECT * FROM beer_types"
 	result = db_connect.execute_query(query).fetchall()
 	print(result)
 	 
