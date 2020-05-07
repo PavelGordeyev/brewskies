@@ -1,77 +1,10 @@
 from flask import Flask, render_template
 from flask import request, redirect
-from flask_table import Table, Col
-import MySQLdb as mariadb
-from db_credentials import host, user, pw, db
+import db_connect as db_connect
+from db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
+from db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 
 app = Flask(__name__)
-
-class IngredientsTable(Table):
-    name = Col('Name')
-    unit = Col('Unit')
-
-# Define ingredients
-class Ingredient(object):
-	def __init__(self, name, unit):
-		self.name = name
-		self.unit = unit
-
-# Define ratings
-class StarRow(object):
-	def __init__(self, star, name, brewer, beer_type):
-		self.star = star
-		self.name = name
-		self.brewer = brewer
-		self.beer_type = beer_type
-
-class StarTable(Table):
-	star = Col('Avg Stars')
-	name = Col('Beer')
-	brewer = Col('Brewer')
-	beer_type = Col('Beer Type')
-
-# Define beers
-class BeersTable(Table):
-	name = Col('Name')
-	beerType = Col('Style')
-
-class Beer(object):
-	def __init__(self, name, beerType):
-		self.name = name
-		self.beerType = beerType
-
-# Define beer/brewers
-class BeerBrewersTable(Table):
-	beer = Col('Beer')
-	brewery = Col('Brewery')
-	location = Col('Location')
-
-class Brewer(object):
-	def __init__(self, name, location):
-		self.name = name
-		self.location = location
-
-class BeerBrewer(object):
-	def __init__(self, beer, brewery, location):
-		self.beer = beer
-		self.brewery = brewery
-		self.location = location
-
-def execute_query(db_connection,query):
-
-	if db_connection is None:
-		print("No connection to the database found! Have you called connect_to_database() first?")
-		return None
-
-	if query is None or len(query.strip()) == 0:
-		print("query is empty! Please pass a SQL query in query")
-		return None
-	
-	cursor = db_connection.cursor()
-	cursor.execute(query)
-	db_connection.commit()
-	return cursor
-
 
 @app.route('/')
 def index():
@@ -80,9 +13,8 @@ def index():
 @app.route('/home')
 def home():
 
-	db_connection = mariadb.connect(host,user,pw,db)
 	query = "SELECT * FROM client"
-	result = execute_query(db_connection, query).fetchall()
+	result = db_connect.execute_query(query).fetchall()
 	print(result)
 	 
 	return render_template('home.html', title='Home')
