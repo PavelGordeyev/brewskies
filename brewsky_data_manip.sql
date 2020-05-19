@@ -117,7 +117,7 @@ SET city = 'Los Angeles', state = 'California', country = 'United States'
 WHERE brewer_id = 57;
 
 --
--- Update brewer's information
+-- Delete a beer from the beer table
 --
 
 DELETE FROM beers
