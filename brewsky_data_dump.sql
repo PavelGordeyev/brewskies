@@ -7,7 +7,7 @@ CREATE TABLE customers(
     customer_id int(11) NOT NULL AUTO_INCREMENT,
 	fname varchar(255) NOT NULL,
 	lname varchar(255) NOT NULL,
-	phone int(11) NOT NULL,
+	phone bigint(10) NOT NULL,
 	PRIMARY KEY (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
