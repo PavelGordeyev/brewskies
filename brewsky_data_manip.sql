@@ -16,7 +16,7 @@ ORDER BY beer_ratings.rating;
 --
   
 SELECT order_items.order_id as `Order #`, orders.order_date as `Order placed on`,
-  orders.status as Status, order_items.quantity, order_items.price, beers.name as Beer
+  orders.status_id as Status, order_items.quantity, order_items.price, beers.name as Beer
 FROM order_items
 JOIN orders on order_items.order_id = orders.order_id
 JOIN beers on order_items.beer_id = beers.beer_id
@@ -31,7 +31,8 @@ SELECT order_items.order_id as `Order #`,
 FROM order_items
 JOIN orders on order_items.order_id = orders.order_id
 JOIN beers on order_items.beer_id = beers.beer_id
-WHERE orders.status ='OPEN'
+JOIN order_status on orders.status_id = order_status.status_id
+WHERE order_status.name IN ('OPEN');
 
 --
 -- Update quantity for order_items
@@ -39,13 +40,13 @@ WHERE orders.status ='OPEN'
 
 UPDATE order_items
 SET quantity = 0
-WHERE order_id = 1 AND beer_id = 1
+WHERE order_id = 1 AND beer_id = 1;
 
 --
 -- Delete open order
 --
 
-DELETE FROM orders WHERE customer_id = 1 and status = 'OPEN'
+DELETE FROM orders WHERE customer_id = 1 and status = 'OPEN';
 
 
 --
