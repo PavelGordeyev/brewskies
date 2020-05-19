@@ -9,7 +9,19 @@ CREATE TABLE customers(
 	lname varchar(255) NOT NULL,
 	phone bigint(10) NOT NULL,
 	PRIMARY KEY (customer_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `order_status`
+--
+
+DROP TABLE IF EXISTS `order_status`;
+CREATE TABLE order_status(
+    status_id int(11) NOT NULL AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+	PRIMARY KEY (status_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `orders`
@@ -18,11 +30,19 @@ CREATE TABLE customers(
 DROP TABLE IF EXISTS `orders`;
 CREATE TABLE orders(
     order_id int(11) NOT NULL AUTO_INCREMENT,
-	customer_id int(11) NOT NULL,
-	status varchar(255) NOT NULL,
+	customer_id int,
+	status_id int,
 	order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (order_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    PRIMARY KEY (order_id),
+    CONSTRAINT FK_Customer FOREIGN KEY (customer_id)
+	REFERENCES customers(customer_id)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+	FOREIGN KEY (status_id)
+	REFERENCES order_status(status_id)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beer_types`
@@ -36,7 +56,7 @@ CREATE TABLE beer_types (
 	family varchar(255) NOT NULL,
 	inactive bit DEFAULT 0,
 	PRIMARY KEY (type_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `brewers`
@@ -51,7 +71,7 @@ CREATE TABLE brewers (
 	country varchar(255) NOT NULL,
 	inactive bit DEFAULT 0,
 	PRIMARY KEY (brewer_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beers`
@@ -65,15 +85,15 @@ CREATE TABLE beers (
 	brewer_id int(11),
 	inactive bit DEFAULT 0,
 	PRIMARY KEY (beer_id),
-	FOREIGN KEY (type_id)
+	CONSTRAINT FK_BeerType FOREIGN KEY (type_id)
 	REFERENCES beer_types(type_id)
 	ON DELETE SET NULL
 	ON UPDATE CASCADE,
-	FOREIGN KEY (brewer_id)
+	CONSTRAINT FK_Brewer FOREIGN KEY (brewer_id)
 	REFERENCES brewers(brewer_id)
 	ON DELETE SET NULL
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `order_items`
@@ -84,7 +104,7 @@ CREATE TABLE order_items(
     order_id int,
     beer_id int,
     quantity int(11) NOT NULL,
-	price int(11) NOT NULL,
+	price decimal(11,2) NOT NULL,
 	PRIMARY KEY (order_id, beer_id),
 	CONSTRAINT FK_CustomerOrder FOREIGN KEY(order_id) 
 	REFERENCES orders(order_id)
@@ -94,7 +114,7 @@ CREATE TABLE order_items(
 	REFERENCES beers(beer_id)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beer_ratings`
@@ -114,7 +134,7 @@ CREATE TABLE beer_ratings (
 	REFERENCES customers(customer_id) 
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `beer_types`
@@ -379,13 +399,25 @@ VALUES
 -- Dumping data for table `orders`
 --
 
- INSERT INTO orders 
- (customer_id, status) 
+INSERT INTO order_status
+(name)
+VALUES
+('OPEN'),
+('SHIPPED'),
+('DELIVERED');
+
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO orders 
+ (customer_id, status_id) 
  VALUES
- (1, 'OPEN'),
- (2, 'OPEN'),
- (1, 'DELIVERED'),
- (2, 'SHIPPED');
+ (1, 1),
+ (2, 1),
+ (1, 3),
+ (2, 2);
 
 
 --
