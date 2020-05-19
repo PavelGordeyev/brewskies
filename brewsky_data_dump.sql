@@ -81,19 +81,19 @@ CREATE TABLE beers (
 
 DROP TABLE IF EXISTS `order_items`;
 CREATE TABLE order_items(
-    order_id int NOT NULL,
-	FOREIGN KEY(order_id) 
+    order_id int,
+    beer_id int,
+    quantity int(11) NOT NULL,
+	price int(11) NOT NULL,
+	PRIMARY KEY (order_id, beer_id),
+	CONSTRAINT FK_CustomerOrder FOREIGN KEY(order_id) 
 	REFERENCES orders(order_id)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE,
-	beer_id int NOT NULL,
-	FOREIGN KEY(beer_id) 
+	CONSTRAINT FK_Beer FOREIGN KEY(beer_id)
 	REFERENCES beers(beer_id)
 	ON DELETE CASCADE
-	ON UPDATE CASCADE,
-	quantity int(11) NOT NULL,
-	price int(11) NOT NULL,
-    PRIMARY KEY (order_id, beer_id)
+	ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -290,7 +290,7 @@ VALUES
 ('Three Floyds Brewing Company','Munster','Indiana','United States'),
 ('Other Half Brewing','Brooklyn','New York','United States'),
 ('Funky Buddha Brewery (Constellation Brands)','Oakland Park','Florida','United States'),
-('To Øl','Copenhagen N',NULL,'Denmark'),
+('To Ol','Copenhagen N',NULL,'Denmark'),
 ('Brewery Ommegang (Duvel-Moortgat)','Cooperstown','New York','United States'),
 ('Evil Twin Brewing','Queens','New York','United States'),
 ('Wylam Brewery','Newcastle upon Tyne','Tyne &amp; Wear','England'),
@@ -393,7 +393,7 @@ VALUES
  INSERT INTO order_items 
  (order_id, beer_id, quantity, price) 
  VALUES
- (3,1,1,5.00);
+ (1,1,1,5.00);
 
 
 --
@@ -404,3 +404,4 @@ INSERT INTO beer_ratings
 (customer_id, beer_id, rating) 
 VALUES
 (1,1,5);
+
