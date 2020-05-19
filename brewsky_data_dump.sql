@@ -383,7 +383,9 @@ VALUES
  (customer_id, status) 
  VALUES
  (1, 'OPEN'),
- (2, 'OPEN');
+ (2, 'OPEN'),
+ (1, 'DELIVERED'),
+ (2, 'SHIPPED');
 
 
 --
@@ -393,7 +395,8 @@ VALUES
  INSERT INTO order_items 
  (order_id, beer_id, quantity, price) 
  VALUES
- (1,1,1,5.00);
+ (1,1,1,5),
+ (1,2,99,1);
 
 
 --
@@ -403,5 +406,7 @@ VALUES
 INSERT INTO beer_ratings 
 (customer_id, beer_id, rating) 
 VALUES
-(1,1,5);
+(1,1,5),
+(2,1,1),
+(2,2,4);
 
