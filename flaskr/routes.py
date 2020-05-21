@@ -1,32 +1,40 @@
 from flaskr import app
-from flask import render_template, request, redirect, jsonify
+from flask import render_template, request, redirect, jsonify, url_for, flash
 from flaskr import db_connect
-from flaskr import db_beer_tables
-from flaskr import db_beer_objects 
+from flaskr.db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
+from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
+from flaskr.forms import SearchForm
 
 @app.route('/')
 def index():
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
 
-@app.route('/home')
+@app.route('/home', methods=['GET','POST'])
 def home():
 
-	# Query for beer name
-	query = "SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ('%Lush%');"
+	form = SearchForm(request.form)
+	if request.method == 'POST':
+		# flash('Searching for {}'.format(form.searchType))
 
-	results = db_connect.execute_query(query).fetchall()
+		# Query for beer name
+		query = "SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id	INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ('%Lush%');"
 
-	# Create object for data returned
-	payload = []
-	content = {}
+		results = db_connect.execute_query(query).fetchall()
+		print("***************results**********************")
 
-	for result in results:
-		content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
-		payload.append(content)
+		# Create object for data returned
+		payload = []
+		content = {}
 
-	print(jsonify(payload).data)
+		for result in results:
+			content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
+			payload.append(content)
+
+		print(jsonify(payload).data)
+
+		return redirect(url_for('home'))
 	 
-	return render_template('home.html', title='Home')
+	return render_template('home.html', title='Home', form=form)
 
 @app.route('/beers')
 def beers():
