@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, redirect, jsonify
-import db_connect as db_connect
-from db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
-from db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
-
-app = Flask(__name__)
+from flaskr import app
+from flask import render_template, request, redirect, jsonify
+from flaskr import db_connect
+from flaskr import db_beer_tables
+from flaskr import db_beer_objects 
 
 @app.route('/')
 def index():
@@ -12,14 +11,20 @@ def index():
 @app.route('/home')
 def home():
 
-	query = "SELECT * FROM beers" 
-	results = jsonify(db_connect.execute_query(query).fetchall())
-	print(results.data)
+	# Query for beer name
+	query = "SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ('%Lush%');"
 
-	# for result in results:
-	# 	content = {'id': result[0], 'username': result[1], 'password': result[2]}
-	# 	payload.append(content)
-	# 	content = {}
+	results = db_connect.execute_query(query).fetchall()
+
+	# Create object for data returned
+	payload = []
+	content = {}
+
+	for result in results:
+		content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
+		payload.append(content)
+
+	print(jsonify(payload).data)
 	 
 	return render_template('home.html', title='Home')
 

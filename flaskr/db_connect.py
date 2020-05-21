@@ -1,5 +1,5 @@
 import MySQLdb as mariadb
-from db_credentials import host, user, pw, db
+from flaskr.db_credentials import host, user, pw, db
 
 def execute_query(query):
 
