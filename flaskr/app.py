@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-from flask import request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 import db_connect as db_connect
 from db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
 from db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
@@ -13,9 +12,14 @@ def index():
 @app.route('/home')
 def home():
 
-	query = "SELECT * FROM beer_types"
-	result = db_connect.execute_query(query).fetchall()
-	print(result)
+	query = "SELECT * FROM beers" 
+	results = jsonify(db_connect.execute_query(query).fetchall())
+	print(result.data)
+
+	# for result in results:
+	# 	content = {'id': result[0], 'username': result[1], 'password': result[2]}
+	# 	payload.append(content)
+	# 	content = {}
 	 
 	return render_template('home.html', title='Home')
 
