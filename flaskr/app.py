@@ -1,60 +1,9 @@
-from flask import Flask, render_template
-from flask import request, redirect
-from flask_table import Table, Col
+from flask import Flask, render_template, request, redirect, jsonify
+import db_connect as db_connect
+from db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
+from db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 
 app = Flask(__name__)
-
-class IngredientsTable(Table):
-    name = Col('Name')
-    unit = Col('Unit')
-
-# Define ingredients
-class Ingredient(object):
-	def __init__(self, name, unit):
-		self.name = name
-		self.unit = unit
-
-# Define ratings
-class StarRow(object):
-	def __init__(self, star, name, brewer, beer_type):
-		self.star = star
-		self.name = name
-		self.brewer = brewer
-		self.beer_type = beer_type
-
-class StarTable(Table):
-	star = Col('Avg Stars')
-	name = Col('Beer')
-	brewer = Col('Brewer')
-	beer_type = Col('Beer Type')
-
-# Define beers
-class BeersTable(Table):
-	name = Col('Name')
-	beerType = Col('Style')
-
-class Beer(object):
-	def __init__(self, name, beerType):
-		self.name = name
-		self.beerType = beerType
-
-# Define beer/brewers
-class BeerBrewersTable(Table):
-	beer = Col('Beer')
-	brewery = Col('Brewery')
-	location = Col('Location')
-
-class Brewer(object):
-	def __init__(self, name, location):
-		self.name = name
-		self.location = location
-
-class BeerBrewer(object):
-	def __init__(self, beer, brewery, location):
-		self.beer = beer
-		self.brewery = brewery
-		self.location = location
-
 
 @app.route('/')
 def index():
@@ -62,6 +11,16 @@ def index():
 
 @app.route('/home')
 def home():
+
+	query = "SELECT * FROM beers" 
+	results = jsonify(db_connect.execute_query(query).fetchall())
+	print(result.data)
+
+	# for result in results:
+	# 	content = {'id': result[0], 'username': result[1], 'password': result[2]}
+	# 	payload.append(content)
+	# 	content = {}
+	 
 	return render_template('home.html', title='Home')
 
 @app.route('/beers')
