@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS=0;
+
 --
 -- Table structure for table `customers`
 --
@@ -55,7 +57,7 @@ CREATE TABLE beer_types (
 	name varchar(255) NOT NULL,
 	origin varchar(255) NOT NULL,
 	family varchar(255) NOT NULL,
-	inactive bit DEFAULT 0,
+	inactive smallint DEFAULT 0,
 	PRIMARY KEY (type_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -70,7 +72,7 @@ CREATE TABLE brewers (
 	city varchar(255) NOT NULL,
 	state varchar(255),
 	country varchar(255) NOT NULL,
-	inactive bit DEFAULT 0,
+	inactive smallint DEFAULT 0,
 	PRIMARY KEY (brewer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -84,7 +86,7 @@ CREATE TABLE beers (
 	name varchar(255) NOT NULL,
 	type_id int(11),
 	brewer_id int(11),
-	inactive bit DEFAULT 0,
+	inactive smallint DEFAULT 0,
 	PRIMARY KEY (beer_id),
 	CONSTRAINT FK_BeerType FOREIGN KEY (type_id)
 	REFERENCES beer_types(type_id)
@@ -443,3 +445,4 @@ VALUES
 (2,1,1),
 (2,2,4);
 
+SET FOREIGN_KEY_CHECKS=1;
