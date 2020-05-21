@@ -14,12 +14,26 @@ def home():
 
 	form = SearchForm(request.form)
 	if request.method == 'POST':
-		# flash('Searching for {}'.format(form.searchType))
 
-		# Query for beer name
-		query = "SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id	INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ('%Lush%');"
+		if form.searchType.data == "beer": # Query for beer name
 
-		results = db_connect.execute_query(query).fetchall()
+			
+			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ( %s );"""
+
+		elif form.searchType.data == "style": # Query for style name
+
+			
+			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_types.name LIKE ( %s );"""
+
+		else: # Query for brewery name
+
+			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.name LIKE ( %s );"""
+
+		# Any values like the beer, style or brewery input
+		searchVal = """%""" + form.searchText.data + """%"""
+
+		results = db_connect.execute_query(query, searchVal).fetchall()
+
 		print("***************results**********************")
 
 		# Create object for data returned

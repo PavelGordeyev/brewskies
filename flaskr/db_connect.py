@@ -1,7 +1,7 @@
 import MySQLdb as mariadb
 from flaskr.db_credentials import host, user, pw, db
 
-def execute_query(query):
+def execute_query(query,val):
 
 	# Create database connection
 	db_connection = mariadb.connect(host,user,pw,db)
@@ -17,7 +17,7 @@ def execute_query(query):
 		return None
 	
 	cursor = db_connection.cursor()
-	cursor.execute(query)
+	cursor.execute(query, (val,))
 	db_connection.commit()
 	
 	return cursor
