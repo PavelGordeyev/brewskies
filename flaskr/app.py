@@ -14,7 +14,7 @@ def home():
 
 	query = "SELECT * FROM beers" 
 	results = jsonify(db_connect.execute_query(query).fetchall())
-	print(result.data)
+	print(results.data)
 
 	# for result in results:
 	# 	content = {'id': result[0], 'username': result[1], 'password': result[2]}
