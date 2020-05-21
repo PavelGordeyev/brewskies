@@ -4,49 +4,69 @@
 <h1>THIS IS OUR HOME(brew) PAGE</h1>
 <br>
 	<ul>
-		<li><a href="{{url_for('home')}}">Search Page</a>
+		<li><a>Log In Page (NOT IMPLEMENTED)</a>
 			<ul>
-				<li>Search bar</li>
-				<li>Drop down for beer, brewery, beer type</li>
+				<li>This will be the first page to appear</li>
+				<li>Will have users login based on if they are a customer or brewer</li>
+				<li>Will use a fake user acct</li>
+				<li>Will use a fake brewer acct</li>
+				<li>Will take to the store front if you're a customer, or Brewer page if you're a brewer</li>
 			</ul>
 		</li>
+		<li><a href="{{url_for('home')}}">Store Front / Search Page</a>
+			<ul>
+				<li>This will be our Home Page</li>
+				<li>Search Bar</li>
+				<li>Drop down for beer, brewery, beer type</li>
+				<li>This will run SELECT query based on the selected table</li>
+				<li>Show 5 recent beers from last order. This is SELECT query from "beers" table.</li>
+				<li>Will have button to add (INSERT) the shown beers</li>
+				<li>Will run SELECT to find if there is a current open order</li>
+				<li>If no current order, will INSERT new order in "orders" table</li>
+			</ul>
+		</li>
+		<li><a href="{{url_for('home')}}">Search Results Page</a>
+			<ul>
+				<li>This will be new page</li>
+				<li>Will show query results based on the type of query the users selects on the Search Page</li>
+				<li>Error page if no results</li>
+				<li>If successful, will return table with search results</li>
+				<li>Will have buttons to add (INSERT) the search results to current open order in "order_items"</li>
+			</ul>
 		<li><a href="{{url_for('beers')}}">Beers Page</a>
 			<ul>
-				<li>Name (from beers table)</li>
-				<li>Brewer (from brewers table)</li>
-				<li>Brewer Location (from brewers table)</li>
-				<li>Ingredient List (from ingredient_boms)</li>
-				<li>avg Star Rating (from beer_ratings)</li>
-				<li>Enter New Rating (Insert into star_ratings)</li>
-				<li>Remove (removes the beer from beers table and associated ratings from star_ratings table)</li>
+				<li>This page is where the user lands when they click on a beer from the results results, orders, or 5 beers that appear on the homepage</li>
+				<li>Has a button to submit (INSERT) rating for the beer.</li>
+				<li>Has a button to add (INSERT) beer to current open order in "order_items"</li>
 			</ul>
 		</li>
 		<li><a href="{{url_for('brewers')}}">Brewers Page</a>
 			<ul>
-				<li>name (from brewers table)</li>
-				<li>country (from brewers table)</li>
-				<li>List of Beers by Type (from beers table and from beer_types table)</li>
-			</ul>
-		</li>
-		<li><a href="{{url_for('beerTypes')}}">Beer Types Page</a>
-			<ul>
-				<li>Name (from beer_types table)</li>
-				<li>Origin (from beer_types table)</li>
-				<li>Family (from beer_types table)</li>
-				<li>Update Name (updates name of type in beer_types)</li>
-				<li>Example beers, listed with Brewery & Beer Name (from beers table and from brewers table)</li>
+				<li>This will be a page for Brewers to manage which beers they distribute</li>
+				<li>Will have a table that will SELECT * all brewers' beers from the "beers" table</li>
+				<li>Each row has a button to delete (DELETE) the beer from the "beers" table</li>
+				<li>Has a form to submit new beer type (INSERT) in "beer_types" table</li>
 			</ul>
 		</li>
 		<li><a href="{{url_for('ratings')}}">Star Rating Page</a>
 			<ul>
-				<li>list of beers (from beer table) ranked by avg star rating</li>
-				<li>beer list will show name (from beer table), brewer (from brewers table), type (from beer_types table)</li>
+				<li>Will have a table of all beers (SELECT) from "beers" table ordered by (AVG) Star Rating from the "beer_ratings" table</li>
+				<li>Each beer will have a button to add (INSERT) beer to current open order in "order_items"</li>
 			</ul>
 		</li>
-		<li><a href="{{url_for('add')}}">Add Page</a>
+		<li><a>Order Page (NOT IMPLEMENTED)</a>
 			<ul>
-				<li>seperate forms for beers, brewers, beer_types, and ingredients</li>
-				<li>submits INSERT to selected table</li>
+				<li>This page will have a table showing the contents of all previous orders</li>
+				<li>Table will generate from SELECT from "order_items" and "orders" where the status is NOT "OPEN" and ordered by "order_date"</li>
+				<li>Page will be empty if no previous orders</li>
+			</ul>
+		</li>
+		<li><a>Cart Page (NOT IMPLEMENTED)</a>
+			<ul>
+				<li>This will be the current shopping cart</li>
+				<li>Will have SELECT query to show the items in current order based on "orders" and "order_items" table</li>
+				<li>Will be able to UPDATE current order by changing quantity of beers</li>
+				<li>Will have DELETE query to remove the current order</li>
 			</ul>
 		</li>
 	</ul>
