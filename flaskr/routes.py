@@ -1,5 +1,5 @@
 from flaskr import app
-from flask import render_template, request, redirect, jsonify, url_for, flash
+from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
 from flaskr.db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
@@ -13,45 +13,48 @@ def index():
 def home():
 
 	form = SearchForm(request.form)
+
 	if request.method == 'POST':
 
-		if form.searchType.data == "beer": # Query for beer name
+		# Set form values to session cookie
+		session['searchType'] = form.searchType.data
+		session['searchText'] = form.searchText.data
 
-			
-			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.name LIKE ( %s );"""
-
-		elif form.searchType.data == "style": # Query for style name
-
-			
-			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_types.name LIKE ( %s );"""
-
-		else: # Query for brewery name
-
-			query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.name LIKE ( %s );"""
-
-		# Any values like the beer, style or brewery input
-		searchVal = """%""" + form.searchText.data + """%"""
-
-		results = db_connect.execute_query(query, searchVal).fetchall()
-
-		print("***************results**********************")
-
-		# Create object for data returned
-		payload = []
-		content = {}
-
-		for result in results:
-			content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
-			payload.append(content)
-
-		print(jsonify(payload).data)
-
-		return redirect(url_for('home'))
+		return redirect(url_for('beers'))
 	 
 	return render_template('home.html', title='Home', form=form)
 
 @app.route('/beers')
 def beers():
+
+	if session.get('searchType', None) == "beer":
+		searchType = "beers.name"
+	elif session.get('searchType', None) == "style":
+		searchType = """beer_types.name"""
+	else:
+		searchType = """brewers.name"""
+
+	searchText = """'%""" + session.get('searchText', None) + """%'"""
+
+	query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
+
+	# Any values like the beer, style or brewery input
+	searchVal = """%""" + session.get('searchText', None) + """%"""
+
+	results = db_connect.execute_query(query).fetchall()
+
+	print("***************results**********************")
+
+	# Create object for data returned
+	payload = []
+	content = {}
+
+	for result in results:
+		content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
+		payload.append(content)
+
+	print(jsonify(payload).data)
+
 	beer_name = "Heineken"
 	brewer = "Heineken"
 	brewer_location = "Amsterdam"
