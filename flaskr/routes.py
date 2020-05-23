@@ -5,6 +5,10 @@ from flaskr.db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 
+# class ItemTable(Table):
+# 	name = Col('Name')
+# 	description = Col('description')
+
 @app.route('/')
 def index():
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
@@ -36,24 +40,25 @@ def beers():
 
 	searchText = """'%""" + session.get('searchText', None) + """%'"""
 
-	query = """SELECT beers.beer_id,beers.name,brewers.name,beer_types.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
+	query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
 
 	# Any values like the beer, style or brewery input
 	searchVal = """%""" + session.get('searchText', None) + """%"""
 
-	results = db_connect.execute_query(query).fetchall()
+	results = db_connect.execute_query(query)
+	print(results)
 
 	print("***************results**********************")
 
 	# Create object for data returned
-	payload = []
-	content = {}
+	# payload = []
+	# content = {}
 
-	for result in results:
-		content = {'beer_id': result[0], 'beer_name': result[1], 'brewer_name': result[2]}
-		payload.append(content)
+	# for result in results:
+	# 	content = {'beer_id': result[0], 'beer_name': result[1], 'beer_types': result[2], 'brewer_name': result[3], 'brewers.city': result[4], 'brewers.country': result[5]}
+	# 	payload.append(content)
 
-	print(jsonify(payload).data)
+	# print(jsonify(payload).data)
 
 	beer_name = "Heineken"
 	brewer = "Heineken"
@@ -64,8 +69,11 @@ def beers():
 					Ingredient('hops', 'oz'),
          			Ingredient('barley', 'LBS'),
          			Ingredient('yeast',"1 packet")]
+
+	# print(ingredients)
 	
 	ing_table = IngredientsTable(ingredients)
+
 
 	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewer=brewer,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
 
