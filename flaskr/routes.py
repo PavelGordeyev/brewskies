@@ -1,7 +1,7 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
+from flaskr.db_beer_tables import SearchResultsTable, BeersTable, BeerBrewersTable, StarTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 
@@ -45,37 +45,22 @@ def beers():
 	# Any values like the beer, style or brewery input
 	searchVal = """%""" + session.get('searchText', None) + """%"""
 
+	# Submit query
 	results = db_connect.execute_query(query)
-	print(results)
-
-	print("***************results**********************")
 
 	# Create object for data returned
-	# payload = []
-	# content = {}
+	payload = []
+	content = {}
 
-	# for result in results:
-	# 	content = {'beer_id': result[0], 'beer_name': result[1], 'beer_types': result[2], 'brewer_name': result[3], 'brewers.city': result[4], 'brewers.country': result[5]}
-	# 	payload.append(content)
+	for result in results:
+		content = {'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
+		payload.append(content)
 
-	# print(jsonify(payload).data)
-
-	beer_name = "Heineken"
-	brewer = "Heineken"
-	brewer_location = "Amsterdam"
 	rating = 4.3
-
-	ingredients = [Ingredient('water', 'gallons'),
-					Ingredient('hops', 'oz'),
-         			Ingredient('barley', 'LBS'),
-         			Ingredient('yeast',"1 packet")]
-
-	# print(ingredients)
 	
-	ing_table = IngredientsTable(ingredients)
+	results_table = SearchResultsTable(payload)
 
-
-	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewer=brewer,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
+	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table)
 
 @app.route('/beerTypes')
 def beerTypes():

@@ -1,8 +1,11 @@
 from flask_table import Table, Col
 
-class IngredientsTable(Table):
+class SearchResultsTable(Table):
     name = Col('Name')
-    unit = Col('Unit')
+    style = Col('Style')
+    brewer = Col('Brewer')
+    city = Col('City')
+    country = Col('Country')
 
 class StarTable(Table):
 	star = Col('Avg Stars')
