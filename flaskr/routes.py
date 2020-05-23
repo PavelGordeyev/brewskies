@@ -1,43 +1,66 @@
-from flask import Flask, render_template, request, redirect, jsonify
-import db_connect as db_connect
-from db_beer_tables import IngredientsTable, BeersTable, BeerBrewersTable, StarTable
-from db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
+from flaskr import app
+from flask import render_template, request, redirect, jsonify, url_for, flash, session
+from flaskr import db_connect
+from flaskr.db_beer_tables import SearchResultsTable, BeersTable, BeerBrewersTable, StarTable
+from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
+from flaskr.forms import SearchForm
 
-app = Flask(__name__)
+# class ItemTable(Table):
+# 	name = Col('Name')
+# 	description = Col('description')
 
 @app.route('/')
 def index():
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
 
-@app.route('/home')
+@app.route('/home', methods=['GET','POST'])
 def home():
 
-	query = "SELECT * FROM beers" 
-	results = jsonify(db_connect.execute_query(query).fetchall())
-	print(results.data)
+	form = SearchForm(request.form)
 
-	# for result in results:
-	# 	content = {'id': result[0], 'username': result[1], 'password': result[2]}
-	# 	payload.append(content)
-	# 	content = {}
+	if request.method == 'POST':
+
+		# Set form values to session cookie
+		session['searchType'] = form.searchType.data
+		session['searchText'] = form.searchText.data
+
+		return redirect(url_for('beers'))
 	 
-	return render_template('home.html', title='Home')
+	return render_template('home.html', title='Home', form=form)
 
 @app.route('/beers')
 def beers():
-	beer_name = "Heineken"
-	brewer = "Heineken"
-	brewer_location = "Amsterdam"
+
+	if session.get('searchType', None) == "beer":
+		searchType = "beers.name"
+	elif session.get('searchType', None) == "style":
+		searchType = """beer_types.name"""
+	else:
+		searchType = """brewers.name"""
+
+	searchText = """'%""" + session.get('searchText', None) + """%'"""
+
+	query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
+
+	# Any values like the beer, style or brewery input
+	searchVal = """%""" + session.get('searchText', None) + """%"""
+
+	# Submit query
+	results = db_connect.execute_query(query)
+
+	# Create object for data returned
+	payload = []
+	content = {}
+
+	for result in results:
+		content = {'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
+		payload.append(content)
+
 	rating = 4.3
-
-	ingredients = [Ingredient('water', 'gallons'),
-					Ingredient('hops', 'oz'),
-         			Ingredient('barley', 'LBS'),
-         			Ingredient('yeast',"1 packet")]
 	
-	ing_table = IngredientsTable(ingredients)
+	results_table = SearchResultsTable(payload)
 
-	return render_template('beers.html', title='Brewskies', beer_name=beer_name,brewer=brewer,brewer_location=brewer_location,rating=rating,ing_table=ing_table)
+	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table)
 
 @app.route('/beerTypes')
 def beerTypes():

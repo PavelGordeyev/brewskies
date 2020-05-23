@@ -7,7 +7,32 @@
 		<br>
 </article>
 <article id="searchForm">
-	<form action="/search" method="get" name="search">
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+	<form action="" method="post" novalidate>
+		<div class="form-group">
+			{{ form.hidden_tag() }}
+			<p>
+				{{ form.searchText(size=150, placeholder="Enter a beer, style, or brewery") }}
+			</p>
+			<p>
+				{{ form.searchType }}
+			</p>
+			<p>{{ form.submit(class_="btn btn-primary") }}</p>
+		</div>
+	</form>
+</article>
+</br>
+{% endblock %}
+
+{# 	<form action="/search" method="get" name="search">
 		<div class="form-group">
 			<input type="text" id="searchText" aria-describedby="searchHelp" placeholder="Enter a beer, style or brewery" autocomplete="off">
 			<select id="category" name="category">
@@ -17,7 +42,4 @@
 			</select>
 		</div>
 		<button id="submit" type="submit" class="btn btn-primary">Submit</button>
-	</form>
-</article>
-</br>
-{% endblock %}
+	</form> #}
