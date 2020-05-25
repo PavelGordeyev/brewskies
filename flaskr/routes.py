@@ -41,9 +41,7 @@ def searchResults():
 
 	searchText = """'%""" + session.get('searchText', None) + """%'"""
 
-	query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE %s LIKE ( %s ) GROUP BY beers.beer_id ORDER BY beer_ratings.rating DESC;""" %(searchType, searchText)
-	
-	# query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
+	query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE UPPER( %s ) LIKE ( %s ) GROUP BY beers.beer_id ORDER BY beer_ratings.rating DESC;""" %(searchType, searchText.upper())
 	
 	# Submit query
 	results = db_connect.execute_query(query)
