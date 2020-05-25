@@ -9,6 +9,7 @@ class SearchResultsTable(Table):
 	brewer = Col('Brewer')
 	city = Col('City')
 	country = Col('Country')
+	rating = Col('Rating')
 
 class SearchResultsTable2(Table):
 	beer_id = Col('beer_id', show=False)
