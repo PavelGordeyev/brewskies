@@ -61,7 +61,7 @@ def searchResults():
 		else:
 			rating = "N/A"
 
-		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': 'lklklk'}
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+'}
 		payload.append(content)
 
 	results_table = SearchResultsTable(payload)
