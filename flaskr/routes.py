@@ -24,25 +24,48 @@ def home():
 		session['searchType'] = form.searchType.data
 		session['searchText'] = form.searchText.data
 
-		return redirect(url_for('beers'))
+		return redirect(url_for('searchResults'))
 	 
 	return render_template('home.html', title='Home', form=form)
 
+@app.route('/searchResults', methods=['GET', 'POST'])
+def searchResults():
+
+	# Determine beer, style or brewery to query
+	if session.get('searchType', None) == "beer":
+		searchType = "beers.name"
+	elif session.get('searchType', None) == "style":
+		searchType = """beer_types.name"""
+	else:
+		searchType = """brewers.name"""
+
+	searchText = """'%""" + session.get('searchText', None) + """%'"""
+	
+	query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
+	
+	# Submit query
+	results = db_connect.execute_query(query)
+
+	# Create object for data returned
+	payload = []
+	content = {}
+	
+	for result in results:
+		abv = result[2] * 100
+		abvStr = str(abv) + '%'
+
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6]}
+		payload.append(content)
+
+	results_table = SearchResultsTable(payload)
+
+	return render_template('results.html', title='BrewskyDB - Search Results',results_table=results_table)
+
+
 @app.route('/beers', methods=['GET', 'POST'])
 def beers():
-	##### OLD QUERY for search
-	# if session.get('searchType', None) == "beer":
-	# 	searchType = "beers.name"
-	# elif session.get('searchType', None) == "style":
-	# 	searchType = """beer_types.name"""
-	# else:
-	# 	searchType = """brewers.name"""
-	# searchText = """'%""" + session.get('searchText', None) + """%'"""
-	#OLD QUERY query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE %s LIKE ( %s );""" %(searchType, searchText)
-	# Any values like the beer, style or brewery input
-	#searchVal = """%""" + session.get('searchText', None) + """%"""
 
-	#get the beer id from the request
+	# Get the beer id from the request
 	beer_id = int(request.args.get('beer_id'))
 
 	# Use the beer_id from the GET command.
@@ -58,16 +81,23 @@ def beers():
 	for result in results:
 		content = {'beer_id': result[0], 'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
 		payload.append(content)
+
 	results_table = SearchResultsTable2(payload)
 	
-	#query for beer average
+	# query for beer average
 	avg_query = """SELECT AVG(beer_ratings.rating) as 'Rating' FROM beers JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE beers.beer_id = %d;""" %(beer_id)
+	
 	# store the table as an object
 	avg_query_result = db_connect.execute_query(avg_query)
+	
 	# get the top left object from the table
 	rating = avg_query_result[0][0]
-	#round to one decimal place
-	rating = round(rating, 1)
+
+	# round to one decimal place
+	if(rating):
+		rating = round(rating, 1)
+	else:
+		rating = 'N/A'
 
 
 	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table)

@@ -1,7 +1,10 @@
 from flask_table import Table, Col, LinkCol
 
 class SearchResultsTable(Table):
-	name = Col('Name')
+	classes = ['table-hover']
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	abv = Col('ABV')
 	style = Col('Style')
 	brewer = Col('Brewer')
 	city = Col('City')
