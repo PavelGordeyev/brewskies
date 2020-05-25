@@ -1,7 +1,7 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import SearchResultsTable, BeersTable, BeerBrewersTable, StarTable
+from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 
@@ -28,7 +28,7 @@ def home():
 	 
 	return render_template('home.html', title='Home', form=form)
 
-@app.route('/beers')
+@app.route('/beers', methods=['GET', 'POST'])
 def beers():
 	##### OLD QUERY for search
 	# if session.get('searchType', None) == "beer":
@@ -42,8 +42,11 @@ def beers():
 	# Any values like the beer, style or brewery input
 	#searchVal = """%""" + session.get('searchText', None) + """%"""
 
+	#get the beer id from the request
+	beer_id = int(request.args.get('beer_id'))
+
 	# Use the beer_id from the GET command.
-	query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.beer_id=%s;""" %(2)
+	query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.beer_id=%d;""" %(beer_id)
 
 	# Submit query
 	results = db_connect.execute_query(query)
@@ -51,13 +54,14 @@ def beers():
 	# Create object for data returned
 	payload = []
 	content = {}
-
+	
 	for result in results:
-		content = {'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
+		content = {'beer_id': result[0], 'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
 		payload.append(content)
-
+	results_table = SearchResultsTable2(payload)
+	
 	#query for beer average
-	avg_query = """SELECT AVG(beer_ratings.rating) as 'Rating' FROM beers JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE beers.beer_id = %s;""" %(2)
+	avg_query = """SELECT AVG(beer_ratings.rating) as 'Rating' FROM beers JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE beers.beer_id = %d;""" %(beer_id)
 	# store the table as an object
 	avg_query_result = db_connect.execute_query(avg_query)
 	# get the top left object from the table
@@ -65,8 +69,6 @@ def beers():
 	#round to one decimal place
 	rating = round(rating, 1)
 
-
-	results_table = SearchResultsTable(payload)
 
 	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table)
 
