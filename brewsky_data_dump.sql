@@ -11,7 +11,7 @@ CREATE TABLE customers(
 	lname varchar(255) NOT NULL,
 	phone bigint(10) NOT NULL,
 	PRIMARY KEY (customer_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `order_status`
@@ -22,7 +22,7 @@ CREATE TABLE order_status(
     status_id int(11) NOT NULL AUTO_INCREMENT,
 	name varchar(255) NOT NULL,
 	PRIMARY KEY (status_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE orders(
 	ON DELETE SET NULL
 	ON UPDATE CASCADE,
 	CONSTRAINT CUSTOMER_STATUS UNIQUE (customer_id,status_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beer_types`
@@ -59,7 +59,7 @@ CREATE TABLE beer_types (
 	family varchar(255) NOT NULL,
 	inactive smallint DEFAULT 0,
 	PRIMARY KEY (type_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `brewers`
@@ -74,7 +74,7 @@ CREATE TABLE brewers (
 	country varchar(255) NOT NULL,
 	inactive smallint DEFAULT 0,
 	PRIMARY KEY (brewer_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beers`
@@ -97,7 +97,7 @@ CREATE TABLE beers (
 	REFERENCES brewers(brewer_id)
 	ON DELETE SET NULL
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `order_items`
@@ -118,7 +118,7 @@ CREATE TABLE order_items(
 	REFERENCES beers(beer_id)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `beer_ratings`
@@ -138,7 +138,7 @@ CREATE TABLE beer_ratings (
 	REFERENCES customers(customer_id) 
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `beer_types`
@@ -709,6 +709,7 @@ INSERT INTO order_status
 (name)
 VALUES
 ('OPEN'),
+('PLACED'),
 ('SHIPPED'),
 ('DELIVERED');
 
@@ -723,7 +724,8 @@ INSERT INTO orders
  (1, 1),
  (2, 1),
  (1, 3),
- (2, 2);
+ (2, 2),
+ (1, 4);
 
 
 --
