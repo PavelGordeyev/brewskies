@@ -74,6 +74,10 @@ td{
 	padding: 10px;
 }
 
+.txtBlack{
+	color: #000000;
+}
+
 #searchForm{
 	position: relative;
 	margin: 0 auto;
@@ -84,4 +88,3 @@ td{
 	width: 400px;
 	display: inline-block;
 }
-

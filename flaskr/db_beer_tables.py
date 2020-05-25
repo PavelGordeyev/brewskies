@@ -1,4 +1,4 @@
-from flask_table import Table, Col, LinkCol
+from flask_table import Table, Col, LinkCol, ButtonCol
 
 class SearchResultsTable(Table):
 	classes = ['table-hover']
@@ -9,6 +9,8 @@ class SearchResultsTable(Table):
 	brewer = Col('Brewer')
 	city = Col('City')
 	country = Col('Country')
+	rating = Col('Rating')
+	order = ButtonCol('+', '.beers', url_kwargs=dict(beer_id='beer_id'), button_attrs={'class': 'btn btn-success'}, column_html_attrs={'class': 'txtBlack'})
 
 class SearchResultsTable2(Table):
 	beer_id = Col('beer_id', show=False)
