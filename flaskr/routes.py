@@ -28,9 +28,52 @@ def home():
 	 
 	return render_template('home.html', title='Home', form=form)
 
+@app.route('/addToOrder', methods=['POST'])
+def addToOrder():
+
+	# Get the beer id from the request
+	beer_id = int(request.args.get('beer_id'));
+
+	# Get the customer who is logged in
+	customer_id = 5;
+
+	# Check if an open order exists for the customer
+	query = """SELECT order_id FROM orders WHERE customer_id=%s AND status_id=1;""" %(customer_id)
+	print("order_id query: ", query)
+
+	# Submit query
+	results = db_connect.execute_query(query)
+
+	# Check if there is an existing open order
+	if len(results) == 0:
+
+		# Insert new order into orders table
+		newOrderQuery = """INSERT INTO orders (customer_id, status_id) VALUES (%s, 1);""" %(customer_id)
+		results = db_connect.execute_query(newOrderQuery)
+
+		# Get the order id that was inserted for the customer
+		results = db_connect.execute_query(query)
+
+		# Initialize quantity results 
+		quantityResults = 0
+
+	else:
+		quantityQuery = """SELECT quantity FROM order_items WHERE order_id=%s AND beer_id=%s;""" %(results[0][0], beer_id)
+		quantityResults = db_connect.execute_query(quantityQuery)
+		quantityResults = quantityResults[0][0] + 1
+
+	# Add beer to order_items
+	newOrderItemQuery = """INSERT INTO order_items (order_id, beer_id, quantity) VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE quantity=%s""" %(results[0][0], beer_id, quantityResults)
+
+	results = db_connect.execute_query(newOrderItemQuery)
+
+	flash('You added a beer! Congrats!')
+
+	return redirect(url_for('searchResults'))
+
 @app.route('/searchResults', methods=['GET', 'POST'])
 def searchResults():
-
+	
 	# Determine beer, style or brewery to query
 	if session.get('searchType', None) == "beer":
 		searchType = "beers.name"
@@ -54,18 +97,21 @@ def searchResults():
 		abv = result[2] * 100
 		abvStr = str(abv) + '%'
 
-		if(result[7]):
+		if(result[7] != None):
 			rating = round(result[7],1)
 		else:
 			rating = "N/A"
+
+
 
 		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+'}
 		payload.append(content)
 
 	results_table = SearchResultsTable(payload)
 
-	return render_template('results.html', title='BrewskyDB - Search Results',results_table=results_table)
+	session['searched'] = 1
 
+	return render_template('results.html', title='BrewskyDB - Search Results',results_table=results_table)
 
 @app.route('/beers', methods=['GET', 'POST'])
 def beers():

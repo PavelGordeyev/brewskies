@@ -21,7 +21,7 @@ def execute_query(query):
 		cursor = db_connection.cursor()
 		cursor.execute(query)
 		data = cursor.fetchall()
-		# db_connection.commit()
+		db_connection.commit()
 		db_connection.close()
 		
 		return data
