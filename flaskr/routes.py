@@ -11,6 +11,7 @@ from flaskr.forms import SearchForm
 
 @app.route('/')
 def index():
+	session['customer_id'] = 1
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
 
 @app.route('/home', methods=['GET','POST'])
@@ -69,9 +70,16 @@ def searchResults():
 
 @app.route('/beers', methods=['GET', 'POST'])
 def beers():
-
 	# Get the beer id from the request
 	beer_id = int(request.args.get('beer_id'))
+	# Get customer id from the session
+	customer_id = session.get('customer_id')
+
+	if request.method == 'POST':
+		#if it's a post, get the rating
+		rating = request.form.get('rating')
+		insert_query = """INSERT INTO beer_ratings (beer_id, customer_id, rating) VALUES ({0}, {1}, {2}) ON DUPLICATE KEY UPDATE rating={2}""".format(beer_id, customer_id, rating)
+		db_connect.execute_query(insert_query)
 
 	# Use the beer_id from the GET command.
 	query = """SELECT beers.beer_id,beers.name,beer_types.name,brewers.name,brewers.city,brewers.country FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beers.beer_id=%d;""" %(beer_id)
@@ -97,7 +105,6 @@ def beers():
 	
 	# get the top left object from the table
 	rating = avg_query_result[0][0]
-
 	# round to one decimal place
 	if(rating):
 		rating = round(rating, 1)
@@ -105,7 +112,7 @@ def beers():
 		rating = 'N/A'
 
 
-	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table)
+	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table, beer_id=beer_id)
 
 @app.route('/beerTypes')
 def beerTypes():
