@@ -166,21 +166,21 @@ def cart():
 
 	cart_query = """SELECT beers.beer_id, order_items.order_id, beers.name, order_items.quantity, beers.price FROM order_items JOIN orders on order_items.order_id = orders.order_id JOIN customers on orders.customer_id = customers.customer_id JOIN beers on order_items.beer_id = beers.beer_id JOIN order_status on orders.status_id = order_status.status_id WHERE customers.customer_id = %d AND order_status.name IN ('OPEN');""" %(customer_id)
 	cart_result = db_connect.execute_query(cart_query)
-	print(cart_result)
+
 	#create object ofr data returned
 	payload = []
 	content = {}
+	total = 0
 
 	for result in cart_result:
 		# print("beer_id {0}, name {1}, quantity {2}, price {3}".format(result[0], result[2], result[3], result[4]))
 		content = {'beer_id': result[0], 'name': result[2], 'quantity': result[3], 'price': result[4]}
 		payload.append(content)
-	
-	print(content)
+		total += result[3] * result[4]
 
 	results_table = CartTable(payload)
 
-	return render_template('cart.html', title='Cart', results_table=results_table)
+	return render_template('cart.html', title='Cart', results_table=results_table, total=total)
 
 @app.route('/beerTypes')
 def beerTypes():
