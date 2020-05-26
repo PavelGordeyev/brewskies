@@ -10,7 +10,7 @@ class SearchResultsTable(Table):
 	city = Col('City')
 	country = Col('Country')
 	rating = Col('Rating')
-	order = ButtonCol('', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='order', button_attrs={'class': 'btn btn-success'})
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id'), attr='order', button_attrs={'class': 'btn btn-success'})
 
 class SearchResultsTable2(Table):
 	beer_id = Col('beer_id', show=False)
