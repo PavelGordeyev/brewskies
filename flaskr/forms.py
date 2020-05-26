@@ -14,4 +14,3 @@ class SearchForm(FlaskForm):
 		choices = [('beer','Beer'),('style','Style'),('brewery','Brewery')])
 	submit = SubmitField("Search")
 
-
