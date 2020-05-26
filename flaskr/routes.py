@@ -1,7 +1,7 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable
+from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 
@@ -67,7 +67,6 @@ def searchResults():
 
 	return render_template('results.html', title='BrewskyDB - Search Results',results_table=results_table)
 
-
 @app.route('/beers', methods=['GET', 'POST'])
 def beers():
 	# Get the beer id from the request
@@ -111,8 +110,29 @@ def beers():
 	else:
 		rating = 'N/A'
 
-
 	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table, beer_id=beer_id)
+
+@app.route('/cart')
+def cart():
+	customer_id = session.get('customer_id')
+
+	#get the customers open order
+
+	cart_query = """SELECT beers.beer_id, order_items.order_id, beers.name, order_items.quantity, order_items.price FROM order_items JOIN orders on order_items.order_id = orders.order_id JOIN beers on order_items.beer_id = beers.beer_id JOIN order_status on orders.status_id = order_status.status_id WHERE customer_id=%d AND order_status.name IN ('OPEN');""" %(customer_id)
+	cart_result = db_connect.execute_query(cart_query)
+
+	#create object ofr data returned
+	payload = []
+	content = {}
+
+	for result in cart_result:
+		print("beer_id {0}, name {1}, quantity {2}, price {3}".format(result[0], result[2], result[3], result[4]))
+		content = {'beer_id': result[0], 'name': result[2], 'quantity': result[3], 'price': result[4]}
+		payload.append(content)
+	
+	results_table = CartTable(payload)
+
+	return render_template('cart.html', title='Cart', results_table=results_table)
 
 @app.route('/beerTypes')
 def beerTypes():

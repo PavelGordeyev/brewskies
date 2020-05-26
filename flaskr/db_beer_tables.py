@@ -20,6 +20,13 @@ class SearchResultsTable2(Table):
 	city = Col('City')
 	country = Col('Country')
 
+class CartTable(Table):
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	quantity = Col('Quantity')
+	price = Col('Price')
+	# subtotal = Col('Subtotal')
+
 class StarTable(Table):
 	star = Col('Avg Stars')
 	name = Col('Beer')
