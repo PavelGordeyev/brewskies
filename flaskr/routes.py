@@ -36,11 +36,10 @@ def addToOrder():
 	beer_id = int(request.args.get('beer_id'));
 
 	# Get the customer who is logged in
-	customer_id = 5;
+	customer_id = session.get('customer_id', None);
 
 	# Check if an open order exists for the customer
 	query = """SELECT order_id FROM orders WHERE customer_id=%s AND status_id=1;""" %(customer_id)
-	print("order_id query: ", query)
 
 	# Submit query
 	results = db_connect.execute_query(query)
@@ -58,10 +57,16 @@ def addToOrder():
 		# Initialize quantity results 
 		quantityResults = 0
 
-	else:
+	else: # Order exists
+
+		# Get the current quantity for the specific beer chosen
 		quantityQuery = """SELECT quantity FROM order_items WHERE order_id=%s AND beer_id=%s;""" %(results[0][0], beer_id)
 		quantityResults = db_connect.execute_query(quantityQuery)
-		quantityResults = quantityResults[0][0] + 1
+
+		if(len(quantityResults) != 0):
+			quantityResults = quantityResults[0][0] + 1
+		else:
+			quantityResults = 0
 
 	# Add beer to order_items
 	newOrderItemQuery = """INSERT INTO order_items (order_id, beer_id, quantity) VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE quantity=%s""" %(results[0][0], beer_id, quantityResults)
