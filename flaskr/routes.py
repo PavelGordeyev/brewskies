@@ -32,8 +32,6 @@ def home():
 		randID = int(round(random.random() * 253,0))
 		randBeers.append(randID);
 
-	print(randBeers)
-
 	# Get 5 beers from the beers table
 	query = """SELECT beers.beer_id, beers.name, beers.abv, beer_types.name, brewers.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_id IN (%s,%s,%s,%s,%s);""" %(randBeers[0],randBeers[1],randBeers[2],randBeers[3],randBeers[4])
 
