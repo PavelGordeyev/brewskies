@@ -48,20 +48,20 @@
 				<li>Has a form to submit new beer type (INSERT) in "beer_types" table</li>
 			</ul>
 		</li>
-		<li><a href="{{url_for('ratings')}}">Star Rating Page</a>
+		<li><a href="{{url_for('star_ratings')}}">Star Rating Page</a>
 			<ul>
 				<li>Will have a table of all beers (SELECT) from "beers" table ordered by (AVG) Star Rating from the "beer_ratings" table</li>
 				<li>Each beer will have a button to add (INSERT) beer to current open order in "order_items"</li>
 			</ul>
 		</li>
-		<li><a>Order Page (NOT IMPLEMENTED)</a>
+		<li><a href="{{url_for('order_history')}}">Star Rating Page</a>
 			<ul>
 				<li>This page will have a table showing the contents of all previous orders</li>
 				<li>Table will generate from SELECT from "order_items" and "orders" where the status is NOT "OPEN" and ordered by "order_date"</li>
 				<li>Page will be empty if no previous orders</li>
 			</ul>
 		</li>
-		<li><a>Cart Page (NOT IMPLEMENTED)</a>
+		<li><a href="{{url_for('cart')}}">Star Rating Page</a>
 			<ul>
 				<li>This will be the current shopping cart</li>
 				<li>Will have SELECT query to show the items in current order based on "orders" and "order_items" table</li>
