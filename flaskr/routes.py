@@ -291,20 +291,6 @@ def brewers():
 
 	return render_template('brewers.html', title='Brewers',brewer=brewer,brewer_location=brewer_location,beers_table=beers_table)
 
-@app.route('/ratings')
-def ratings():
-
-	starrows = [StarRow('5', 'Milwaukee\'s best', 'Miller Brewing Company', 'Pale Lager'),
-				StarRow('5', 'Bud Light Lime', 'AB Inbev', 'Gross Fake Fruit Beer')]
-	
-	star_table = StarTable(starrows)
-
-	return render_template('star_ratings.html', title='Ratings', star_table=star_table)
-
-@app.route('/add')
-def add():
-	return render_template('add.html', title='Add elements')
-
 @app.errorhandler(404)
 def pageNotFound(error):
 	return render_template('404.html', title='Brewsky Not Found')
