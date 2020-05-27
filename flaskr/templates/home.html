@@ -6,16 +6,10 @@
 		<p>Go ahead and search for a beer, style or brewery below, and we'll see if we can get some info for you!</p>
 		<br>
 </article>
+<article id="searchResults">
+	{{ randBeersTable }}
+</article>
 <article id="searchForm">
-	{% with messages = get_flashed_messages() %}
-	{% if messages %}
-		<ul>
-			{% for message in messages %}
-			<li>{{ message }}</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
-	{% endwith %}
 	<form action="" method="post" novalidate>
 		<div class="form-group">
 			{{ form.hidden_tag() }}
