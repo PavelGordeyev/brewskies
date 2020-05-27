@@ -186,7 +186,7 @@ def cart():
 def order_history():
 	customer_id = session.get('customer_id')
 
-	#get the customers open order
+	#get the customers order history
 	order_query = """SELECT orders.order_date as 'Order Date', order_status.name as 'Status', SUM(order_items.quantity * beers.price) AS 'Order Total' FROM order_items JOIN orders on order_items.order_id = orders.order_id JOIN customers on orders.customer_id = customers.customer_id JOIN beers on order_items.beer_id = beers.beer_id JOIN order_status on orders.status_id = order_status.status_id WHERE customers.customer_id = %d AND order_status.name != 'OPEN' GROUP BY orders.order_id ORDER BY orders.order_date;""" %(customer_id)
 	order_result = db_connect.execute_query(order_query)
 
@@ -202,6 +202,32 @@ def order_history():
 
 	return render_template('order_history.html', title='Order History', results_table=results_table)
 	
+@app.route('/star_ratings')
+def star_ratings():
+	customer_id = session.get('customer_id')
+
+	#get all the beers ordered by rating
+	star_query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id GROUP BY beers.beer_id ORDER BY CASE WHEN AVG(beer_ratings.rating) IS NULL THEN 0 END, AVG(beer_ratings.rating) DESC;"""
+	star_results = db_connect.execute_query(star_query)
+	# Create object for data returned
+	payload = []
+	content = {}
+	
+	for result in star_results:
+		abv = result[2] * 100
+		abvStr = str(abv) + '%'
+
+		if(result[7] != None):
+			rating = round(result[7],1)
+		else:
+			rating = "N/A"
+
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+'}
+		payload.append(content)
+
+	results_table = SearchResultsTable(payload)
+	
+	return render_template('star_ratings.html', title='Star Ratings',results_table=results_table)
 
 @app.route('/beerTypes')
 def beerTypes():
@@ -210,7 +236,6 @@ def beerTypes():
 	origin = "Deep back woods of Washington"
 	family = "Pale Ale"
 
-
 	beers = [Beer('Space Dust IPA','IPA'),
 			Beer('Lush','IPA'),
 			Beer('Hazelicous','IPA')]
@@ -218,7 +243,6 @@ def beerTypes():
 	brewers = [Brewer('Elysian','Seattle'),
 				Brewer('Fremont Brewing Company','Seattle'),
 				Brewer("Rueben's Brews",'Seattle')]
-
 
 	beer_brewer = [BeerBrewer(beers[0].name,brewers[0].name,brewers[0].location),
 					BeerBrewer(beers[1].name,brewers[1].name,brewers[1].location),
