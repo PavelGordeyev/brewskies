@@ -84,6 +84,11 @@ td{
 	width: 600px;
 }
 
+.textField{
+	width: 400px;
+	display: inline-block;
+}
+
 #searchText{
 	width: 400px;
 	display: inline-block;

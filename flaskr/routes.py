@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, jsonify, url_for, flash, s
 from flaskr import db_connect
 from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable, RandomTable, BrewersTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
-from flaskr.forms import SearchForm
+from flaskr.forms import SearchForm, AddBeerForm
 import random
 
 @app.route('/')
@@ -256,15 +256,50 @@ def star_ratings():
 	
 	return render_template('star_ratings.html', title='Star Ratings',results_table=results_table)
 
-@app.route('/brewers')
+@app.route('/addBeerDB')
+def addBeerDB():
+
+	addBeer_name = """'""" + session.get('addBeer_name', None) + """'"""
+	addBeer_type = session.get('addBeer_type', None)
+	addBeer_brewer = session.get('addBeer_brewer', None)
+	addBeer_price = session.get('addBeer_price', None)
+	addBeer_abv = session.get('addBeer_abv', None) / 100
+
+	newBeerQuery = """INSERT INTO beers (name, type_id, brewer_id, price, abv) VALUES (%s, %s, %s, %s, %s);""" %(addBeer_name, addBeer_type, addBeer_brewer, addBeer_price, addBeer_abv)
+
+	results = db_connect.execute_query(newBeerQuery)
+
+	return redirect(url_for('brewers'))
+
+@app.route('/brewers', methods=['GET', 'POST'])
 def brewers():
 
 	brewerID = session.get('brewer_id', None)
 
 	# Get brewer's beer counts
+	query = """SELECT beer_types.type_id, beer_types.name FROM beer_types;"""
+	results = db_connect.execute_query(query)
+
+	# Get the results from the forms
+	form = AddBeerForm(request.form)
+
+	# Pass list of beer types to form
+	form.type_id.choices = [result for result in results]
+
+	if request.method == 'POST':
+
+		# Set form values to session cookie
+		session['addBeer_name'] = form.name.data
+		session['addBeer_type'] = form.type_id.data
+		session['addBeer_brewer'] = brewerID
+		session['addBeer_price'] = form.price.data
+		session['addBeer_abv'] = form.abv.data
+
+		return redirect(url_for('addBeerDB'))
+
+	# Get brewer's beer counts
 	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM beers RIGHT JOIN brewers ON beers.brewer_id = brewers.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
 	results = db_connect.execute_query(query)
-	print(results)
 
 	# Set the attributes of the brewery
 	brewer = results[0][0]
@@ -275,16 +310,14 @@ def brewers():
 	if results[0][3] == 0:
 
 		noBeers = "No beers listed for this brewer"
-		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers=noBeers,results_table=None)
+		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers=noBeers,results_table=None,form=form)
 
 	else:
-
 		# Get the list of beers for the brewer
 		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d;""" %(brewerID)
 
 		# Submit query
 		results = db_connect.execute_query(query)
-		print("results: ", results)
 
 		# Create object for data returned
 		payload = []
@@ -300,8 +333,7 @@ def brewers():
 		
 		brewersBeersTable = BrewersTable(payload)
 
-		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers="",brewersBeersTable=brewersBeersTable)
-	# return render_template('brewers.html', title='Brewers')
+		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers="",brewersBeersTable=brewersBeersTable,form=form)
 
 @app.errorhandler(404)
 def pageNotFound(error):
