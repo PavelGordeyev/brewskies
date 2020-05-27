@@ -340,5 +340,5 @@ def pageNotFound(error):
 	return render_template('404.html', title='Brewsky Not Found')
 
 @app.errorhandler(500)
-def pageNotFound(error):
-	return render_template('500.html', title=
+def majorError(error):
+	return render_template('500.html', title='Major Brewsky Error')
