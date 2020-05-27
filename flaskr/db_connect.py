@@ -27,4 +27,4 @@ def execute_query(query):
 		return data
 
 	except Exception as e:
-		return (str(e),)
+		return (-1, str(e))

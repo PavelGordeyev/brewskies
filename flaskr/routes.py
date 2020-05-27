@@ -1,9 +1,10 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable
+from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable, RandomTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
+import random
 
 @app.route('/')
 def index():
@@ -13,6 +14,7 @@ def index():
 @app.route('/home', methods=['GET','POST'])
 def home():
 
+	# Get the results from the forms
 	form = SearchForm(request.form)
 
 	if request.method == 'POST':
@@ -22,8 +24,36 @@ def home():
 		session['searchText'] = form.searchText.data
 
 		return redirect(url_for('searchResults'))
+
+	# Generate 5 random beer id to show on the home page
+	randBeers = []
+
+	for i in range(0, 5):
+		randID = int(round(random.random() * 253,0))
+		randBeers.append(randID);
+
+	print(randBeers)
+
+	# Get 5 beers from the beers table
+	query = """SELECT beers.beer_id, beers.name, beers.abv, beer_types.name, brewers.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_id IN (%s,%s,%s,%s,%s);""" %(randBeers[0],randBeers[1],randBeers[2],randBeers[3],randBeers[4])
+
+	results = db_connect.execute_query(query)
+	print(results)
+
+	# Create object for data returned
+	payload = []
+	content = {}
+	
+	for result in results:
+		abv = result[2] * 100
+		abvStr = str(abv) + '%'
+
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4]}
+		payload.append(content)
+
+	randBeersTable = RandomTable(payload)
 	 
-	return render_template('home.html', title='Home', form=form)
+	return render_template('home.html', title='Home', form=form,randBeersTable=randBeersTable)
 
 @app.route('/addToOrder', methods=['POST'])
 def addToOrder():
@@ -108,8 +138,6 @@ def searchResults():
 		payload.append(content)
 
 	results_table = SearchResultsTable(payload)
-
-	session['searched'] = 1
 
 	return render_template('results.html', title='BrewskyDB - Search Results',results_table=results_table)
 
