@@ -27,6 +27,11 @@ class CartTable(Table):
 	price = Col('Price')
 	# subtotal = Col('Subtotal')
 
+class HistoryTable(Table):
+	order_date = Col('Order Date')
+	name = Col('Status')
+	total = Col('Total')
+
 class StarTable(Table):
 	star = Col('Avg Stars')
 	name = Col('Beer')

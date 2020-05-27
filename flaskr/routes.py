@@ -1,7 +1,7 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable
+from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 
@@ -181,6 +181,27 @@ def cart():
 	results_table = CartTable(payload)
 
 	return render_template('cart.html', title='Cart', results_table=results_table, total=total)
+
+@app.route('/order_history')
+def order_history():
+	customer_id = session.get('customer_id')
+
+	#get the customers open order
+	order_query = """SELECT orders.order_date as 'Order Date', order_status.name as 'Status', SUM(order_items.quantity * beers.price) AS 'Order Total' FROM order_items JOIN orders on order_items.order_id = orders.order_id JOIN customers on orders.customer_id = customers.customer_id JOIN beers on order_items.beer_id = beers.beer_id JOIN order_status on orders.status_id = order_status.status_id WHERE customers.customer_id = %d AND order_status.name != 'OPEN' GROUP BY orders.order_id ORDER BY orders.order_date;""" %(customer_id)
+	order_result = db_connect.execute_query(order_query)
+
+	#create object ofr data returned
+	payload = []
+	content = {}
+
+	for result in order_result:
+		content = {'order_date': result[0], 'name':result[1], 'total': result[2]}
+		payload.append(content)
+	
+	results_table = HistoryTable(payload)
+
+	return render_template('order_history.html', title='Order History', results_table=results_table)
+	
 
 @app.route('/beerTypes')
 def beerTypes():
