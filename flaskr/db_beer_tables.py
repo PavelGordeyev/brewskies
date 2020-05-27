@@ -20,6 +20,13 @@ class RandomTable(Table):
 	style = Col('Style')
 	brewer = Col('Brewer')
 
+class BrewersTable(Table):
+	classes = ['table-hover']
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	abv = Col('ABV')
+	style = Col('Style')
+
 class SearchResultsTable2(Table):
 	beer_id = Col('beer_id', show=False)
 	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')

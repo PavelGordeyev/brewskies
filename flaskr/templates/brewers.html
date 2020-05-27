@@ -2,11 +2,13 @@
 
 {% block body %}
 
-<h1>{{ brewer }}</h1>
-<h3>{{ brewer_location }}</h3>
+<h2> {{ brewer }} </h2>
+<h4> {{ city }}, {{ country }} </h4>
 
-<aside>
-	{{ beers_table }}
-</aside>
+<p> {{ noBeers }} </p>
+
+<article id="randomBeers">
+	{{ brewersBeersTable }}
+</article>
 
 {% endblock %}

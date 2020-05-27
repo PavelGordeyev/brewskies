@@ -1,7 +1,7 @@
 from flaskr import app
 from flask import render_template, request, redirect, jsonify, url_for, flash, session
 from flaskr import db_connect
-from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable, RandomTable
+from flaskr.db_beer_tables import SearchResultsTable, SearchResultsTable2, BeersTable, BeerBrewersTable, StarTable, CartTable, HistoryTable, RandomTable, BrewersTable
 from flaskr.db_beer_objects import Ingredient, StarRow, Beer, Brewer, BeerBrewer
 from flaskr.forms import SearchForm
 import random
@@ -9,6 +9,8 @@ import random
 @app.route('/')
 def index():
 	session['customer_id'] = 1
+	session['brewer_id'] = int(round(random.random() * 142,0))
+
 	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
 
 @app.route('/home', methods=['GET','POST'])
@@ -36,7 +38,6 @@ def home():
 	query = """SELECT beers.beer_id, beers.name, beers.abv, beer_types.name, brewers.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_id IN (%s,%s,%s,%s,%s);""" %(randBeers[0],randBeers[1],randBeers[2],randBeers[3],randBeers[4])
 
 	results = db_connect.execute_query(query)
-	print(results)
 
 	# Create object for data returned
 	payload = []
@@ -255,41 +256,52 @@ def star_ratings():
 	
 	return render_template('star_ratings.html', title='Star Ratings',results_table=results_table)
 
-@app.route('/beerTypes')
-def beerTypes():
-
-	type_name = "IPA"
-	origin = "Deep back woods of Washington"
-	family = "Pale Ale"
-
-	beers = [Beer('Space Dust IPA','IPA'),
-			Beer('Lush','IPA'),
-			Beer('Hazelicous','IPA')]
-
-	brewers = [Brewer('Elysian','Seattle'),
-				Brewer('Fremont Brewing Company','Seattle'),
-				Brewer("Rueben's Brews",'Seattle')]
-
-	beer_brewer = [BeerBrewer(beers[0].name,brewers[0].name,brewers[0].location),
-					BeerBrewer(beers[1].name,brewers[1].name,brewers[1].location),
-					BeerBrewer(beers[2].name,brewers[2].name,brewers[2].location)]
-
-	beer_brewer_table = BeerBrewersTable(beer_brewer)
-
-	return render_template('beer_types.html', title='Beer Types', type_name=type_name,origin=origin,family=family,beer_brewer_table=beer_brewer_table)
-
 @app.route('/brewers')
 def brewers():
-	brewer = "Elysian"
-	brewer_location = "Seattle, WA"
 
-	beers = [Beer('Space Dust IPA','IPA'),
-			Beer('Contact Haze','Hazy IPA'),
-			Beer('SuperFuzz','Blood Orange Pale')]
+	brewerID = session.get('brewer_id', None)
 
-	beers_table = BeersTable(beers)
+	# Get brewer's beer counts
+	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM beers RIGHT JOIN brewers ON beers.brewer_id = brewers.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
+	results = db_connect.execute_query(query)
+	print(results)
 
-	return render_template('brewers.html', title='Brewers',brewer=brewer,brewer_location=brewer_location,beers_table=beers_table)
+	# Set the attributes of the brewery
+	brewer = results[0][0]
+	city = results[0][1]
+	country = results[0][2]
+
+	# Brewer has no beers listed
+	if results[0][3] == 0:
+
+		noBeers = "No beers listed for this brewer"
+		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers=noBeers,results_table=None)
+
+	else:
+
+		# Get the list of beers for the brewer
+		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d;""" %(brewerID)
+
+		# Submit query
+		results = db_connect.execute_query(query)
+		print("results: ", results)
+
+		# Create object for data returned
+		payload = []
+		content = {}
+		
+		for result in results:
+
+			abv = result[2] * 100
+			abvStr = str(abv) + '%'
+
+			content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3]}
+			payload.append(content)
+		
+		brewersBeersTable = BrewersTable(payload)
+
+		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers="",brewersBeersTable=brewersBeersTable)
+	# return render_template('brewers.html', title='Brewers')
 
 @app.errorhandler(404)
 def pageNotFound(error):
