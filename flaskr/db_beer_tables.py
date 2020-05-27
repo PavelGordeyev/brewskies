@@ -10,7 +10,8 @@ class SearchResultsTable(Table):
 	city = Col('City')
 	country = Col('Country')
 	rating = Col('Rating')
-	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id'), attr='order', button_attrs={'class': 'btn btn-success'})
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
 
 class RandomTable(Table):
 	classes = ['table-hover']

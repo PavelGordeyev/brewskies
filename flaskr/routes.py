@@ -98,9 +98,9 @@ def addToOrder():
 
 	results = db_connect.execute_query(newOrderItemQuery)
 
-	flash('You added a beer! Congrats!')
+	flash('You added a beer to your shopping cart! Congrats!')
 
-	return redirect(url_for('searchResults'))
+	return redirect(url_for(request.args.get('route')))
 
 @app.route('/searchResults', methods=['GET', 'POST'])
 def searchResults():
@@ -133,7 +133,7 @@ def searchResults():
 		else:
 			rating = "N/A"
 
-		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+'}
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+', 'route': 'searchResults'}
 		payload.append(content)
 
 	results_table = SearchResultsTable(payload)
@@ -249,7 +249,7 @@ def star_ratings():
 		else:
 			rating = "N/A"
 
-		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+'}
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'city': result[5], 'country': result[6], 'rating': rating, 'order': '+', 'route': 'star_ratings'}
 		payload.append(content)
 
 	results_table = SearchResultsTable(payload)
@@ -341,4 +341,4 @@ def pageNotFound(error):
 
 @app.errorhandler(500)
 def pageNotFound(error):
-	return render_template('500.html', title='Major Brewsky Error')
+	return render_template('500.html', title=
