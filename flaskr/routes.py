@@ -185,12 +185,19 @@ def beers():
 
 	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table, beer_id=beer_id)
 
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 def cart():
 	customer_id = session.get('customer_id')
+	if request.method == 'POST': #if it's a post then we need to delete a row. First find the latest order, then delete the row
+		toRemove = int(request.args.get('beer_id'))
+		order_id_query = """SELECT order_id FROM orders WHERE customer_id={0} AND status_id=1""".format(customer_id)
+		order_id_result = db_connect.execute_query(order_id_query)
+		print(order_id_result[0][0], toRemove)
+		delete_query = """DELETE FROM order_items WHERE order_id={0} AND beer_id={1}""".format(order_id_result[0][0], toRemove)
+
+		db_connect.execute_query(delete_query)
 
 	#get the customers open order
-
 	cart_query = """SELECT beers.beer_id, order_items.order_id, beers.name, order_items.quantity, beers.price FROM order_items JOIN orders on order_items.order_id = orders.order_id JOIN customers on orders.customer_id = customers.customer_id JOIN beers on order_items.beer_id = beers.beer_id JOIN order_status on orders.status_id = order_status.status_id WHERE customers.customer_id = %d AND order_status.name IN ('OPEN');""" %(customer_id)
 	cart_result = db_connect.execute_query(cart_query)
 
@@ -208,6 +215,17 @@ def cart():
 	results_table = CartTable(payload)
 
 	return render_template('cart.html', title='Cart', results_table=results_table, total=total)
+
+@app.route('/cartSubmit', methods=['GET', 'POST'])
+def cartSubmit():
+	customer_id = session.get('customer_id')
+	#change status of customer order to order placed
+
+	#in the order_status table, 2 == Placed, here I use the variable directly instead of using another query.
+	order_query = """UPDATE orders SET orders.status_id=2 WHERE orders.status_id=1 AND orders.customer_id={0};""".format(customer_id)
+	order_results = db_connect.execute_query(order_query)
+	
+	return render_template('cartSubmit.html', title="Submit Successful")
 
 @app.route('/order_history')
 def order_history():
