@@ -271,10 +271,22 @@ def addBeerDB():
 
 	return redirect(url_for('brewers'))
 
+@app.route('/rmBeerDB',methods=['GET', 'POST'])
+def rmBeerDB():
+
+	beer_id = int(request.args.get('beer_id'));
+
+	rmBeerQuery = """DELETE FROM beers WHERE beer_id = %s;""" %(beer_id)
+
+	results = db_connect.execute_query(rmBeerQuery)
+
+	return redirect(url_for(request.args.get('route')))
+
 @app.route('/brewers', methods=['GET', 'POST'])
 def brewers():
 
-	brewerID = session.get('brewer_id', None)
+	# brewerID = session.get('brewer_id', None)
+	brewerID = 6
 
 	# Get brewer's beer counts
 	query = """SELECT beer_types.type_id, beer_types.name FROM beer_types;"""
@@ -306,32 +318,39 @@ def brewers():
 	city = results[0][1]
 	country = results[0][2]
 
+	# print(1)
 	# Brewer has no beers listed
 	if results[0][3] == 0:
-
+		# print(2)
 		noBeers = "No beers listed for this brewer"
 		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers=noBeers,results_table=None,form=form)
 
 	else:
 		# Get the list of beers for the brewer
 		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d;""" %(brewerID)
-
+		# print(3)
 		# Submit query
 		results = db_connect.execute_query(query)
 
 		# Create object for data returned
 		payload = []
 		content = {}
-		
+		# print(4)
 		for result in results:
 
 			abv = result[2] * 100
 			abvStr = str(abv) + '%'
+			# print(5)
 
-			content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3]}
+			content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'rmBeer': 'x', 'route': 'brewers'}
+			# print(content)
+			# print(6)
 			payload.append(content)
+			# print(7)
 		
+		# print(8)
 		brewersBeersTable = BrewersTable(payload)
+		# print(9)
 
 		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers="",brewersBeersTable=brewersBeersTable,form=form)
 

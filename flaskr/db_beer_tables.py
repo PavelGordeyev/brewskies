@@ -27,6 +27,8 @@ class BrewersTable(Table):
 	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
 	abv = Col('ABV')
 	style = Col('Style')
+	route = Col('route', show=False)
+	rmBeer = ButtonCol('', 'rmBeerDB', url_kwargs=dict(beer_id='beer_id',route='route'), attr='rmBeer', button_attrs={'class': 'btn btn-danger'})
 
 class SearchResultsTable2(Table):
 	beer_id = Col('beer_id', show=False)
