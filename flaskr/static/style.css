@@ -47,6 +47,7 @@ nav li:hover{
 
 table{
 	width: 70%;
+	margin: 0 auto;
 	border-collapse: collapse;
 	border: 2px solid black;
 }

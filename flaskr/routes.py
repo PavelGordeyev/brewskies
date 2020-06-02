@@ -309,8 +309,11 @@ def rmBeerDB():
 @app.route('/brewers', methods=['GET', 'POST'])
 def brewers():
 
-	# brewerID = session.get('brewer_id', None)
-	brewerID = 6
+	# Check if a brewer id was created from index
+	if(session['brewer_id'] != None):
+		brewerID = session.get('brewer_id', None)
+	else:
+		brewerID = int(round(random.random() * 142,0))
 
 	# Get brewer's beer counts
 	query = """SELECT beer_types.type_id, beer_types.name FROM beer_types;"""
