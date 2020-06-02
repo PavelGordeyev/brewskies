@@ -13,6 +13,18 @@
 	<br>
 	<h2>Locale: {{ brewer_location }}</h2>
 	<br> -->
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<ul class=flashes>
+			{% for message in messages %}
+				<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+  	{% endwith %}
+  
+
 	<aside>
 		{{ results_table }}
 	</aside>
@@ -36,11 +48,8 @@
 		</form>
 	</aside>
 	<br>
-	<form action="/removeBeer" method="post">
-		<button id="removeBeer" type="submit" class="bt+n btn-danger">Remove Beer</button>
-	</form>
-</article>
 
+</article>
 
 </article>
 </br>

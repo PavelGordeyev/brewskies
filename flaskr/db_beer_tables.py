@@ -39,6 +39,9 @@ class SearchResultsTable2(Table):
 	brewer = Col('Brewer')
 	city = Col('City')
 	country = Col('Country')
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
+
 
 class CartTable(Table):
 	beer_id = Col('beer_id', show=False)

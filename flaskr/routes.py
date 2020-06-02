@@ -100,7 +100,7 @@ def addToOrder():
 
 	flash('You added a beer to your shopping cart! Congrats!')
 
-	return redirect(url_for(request.args.get('route')))
+	return redirect(request.args.get('route'))
 
 @app.route('/searchResults', methods=['GET', 'POST'])
 def searchResults():
@@ -146,7 +146,7 @@ def beers():
 	beer_id = int(request.args.get('beer_id'))
 	# Get customer id from the session
 	customer_id = session.get('customer_id')
-
+	print(1)
 	if request.method == 'POST':
 		#if it's a post, get the rating
 		rating = request.form.get('rating')
@@ -164,11 +164,11 @@ def beers():
 	content = {}
 	
 	for result in results:
-		content = {'beer_id': result[0], 'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5]}
+		content = {'beer_id': result[0], 'name': result[1], 'style': result[2], 'brewer': result[3], 'city': result[4], 'country': result[5], 'route':'beers?beer_id={0}'.format(beer_id), 'order':'+'}
 		payload.append(content)
 
 	results_table = SearchResultsTable2(payload)
-	
+	print(2)
 	# query for beer average
 	avg_query = """SELECT AVG(beer_ratings.rating) as 'Rating' FROM beers JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE beers.beer_id = %d;""" %(beer_id)
 	
@@ -182,7 +182,7 @@ def beers():
 		rating = round(rating, 1)
 	else:
 		rating = 'N/A'
-
+	print(3)
 	return render_template('beers.html', title='Brewskies',rating=rating,results_table=results_table, beer_id=beer_id)
 
 @app.route('/cart', methods=['GET', 'POST'])
