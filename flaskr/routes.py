@@ -35,7 +35,7 @@ def home():
 		randBeers.append(randID);
 
 	# Get 5 beers from the beers table
-	query = """SELECT beers.beer_id, beers.name, beers.abv, beer_types.name, brewers.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_id IN (%s,%s,%s,%s,%s);""" %(randBeers[0],randBeers[1],randBeers[2],randBeers[3],randBeers[4])
+	query = """SELECT beers.beer_id, beers.name, beers.abv, beer_types.name, brewers.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE beer_id IN (%s,%s,%s,%s,%s) AND beers.inactive = 0;""" %(randBeers[0],randBeers[1],randBeers[2],randBeers[3],randBeers[4])
 
 	results = db_connect.execute_query(query)
 
@@ -115,7 +115,7 @@ def searchResults():
 
 	searchText = """'%""" + session.get('searchText', None) + """%'"""
 
-	query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE UPPER( %s ) LIKE ( %s ) GROUP BY beers.beer_id ORDER BY beer_ratings.rating DESC;""" %(searchType, searchText.upper())
+	query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE UPPER( %s ) LIKE ( %s ) AND beers.inactive = 0 GROUP BY beers.beer_id ORDER BY beer_ratings.rating DESC;""" %(searchType, searchText.upper())
 	
 	# Submit query
 	results = db_connect.execute_query(query)
@@ -252,7 +252,7 @@ def star_ratings():
 	customer_id = session.get('customer_id')
 
 	#get all the beers ordered by rating
-	star_query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id GROUP BY beers.beer_id ORDER BY CASE WHEN AVG(beer_ratings.rating) IS NULL THEN 0 END, AVG(beer_ratings.rating) DESC;"""
+	star_query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name,brewers.name,brewers.city,brewers.country,AVG(beer_ratings.rating) as Rating FROM beers INNER JOIN beer_types on beers.type_id = beer_types.type_id INNER JOIN brewers on beers.brewer_id = brewers.brewer_id LEFT JOIN beer_ratings on beers.beer_id = beer_ratings.beer_id WHERE beers.inactive = 0 GROUP BY beers.beer_id ORDER BY CASE WHEN AVG(beer_ratings.rating) IS NULL THEN 0 END, AVG(beer_ratings.rating) DESC;"""
 	star_results = db_connect.execute_query(star_query)
 	# Create object for data returned
 	payload = []
@@ -334,7 +334,7 @@ def brewers():
 		return redirect(url_for('addBeerDB'))
 
 	# Get brewer's beer counts
-	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM beers RIGHT JOIN brewers ON beers.brewer_id = brewers.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
+	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM beers RIGHT JOIN brewers ON beers.brewer_id = brewers.brewer_id WHERE brewers.brewer_id = %s AND beers.inactive = 0 GROUP BY brewers.name;""" %(brewerID)
 	results = db_connect.execute_query(query)
 
 	# Set the attributes of the brewery
@@ -351,7 +351,7 @@ def brewers():
 
 	else:
 		# Get the list of beers for the brewer
-		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d;""" %(brewerID)
+		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d AND beers.inactive = 0;""" %(brewerID)
 		# print(3)
 		# Submit query
 		results = db_connect.execute_query(query)
