@@ -20,6 +20,8 @@ class RandomTable(Table):
 	abv = Col('ABV')
 	style = Col('Style')
 	brewer = Col('Brewer')
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
 
 class BrewersTable(Table):
 	classes = ['table-hover']

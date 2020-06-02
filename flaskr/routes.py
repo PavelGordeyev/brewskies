@@ -47,7 +47,7 @@ def home():
 		abv = result[2] * 100
 		abvStr = str(abv) + '%'
 
-		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4]}
+		content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'brewer': result[4], 'route': 'home', 'order': '+'}
 		payload.append(content)
 
 	randBeersTable = RandomTable(payload)
