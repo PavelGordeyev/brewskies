@@ -41,6 +41,8 @@ class CartTable(Table):
 	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
 	quantity = Col('Quantity')
 	price = Col('Price')
+	remove = ButtonCol('Remove From Order', 'cart', url_kwargs=dict(beer_id='beer_id'), button_attrs={'class': 'btn btn-danger'})
+
 	# subtotal = Col('Subtotal')
 
 class HistoryTable(Table):
