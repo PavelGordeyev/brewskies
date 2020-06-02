@@ -294,7 +294,13 @@ def rmBeerDB():
 
 	beer_id = int(request.args.get('beer_id'));
 
-	rmBeerQuery = """DELETE FROM beers WHERE beer_id = %s;""" %(beer_id)
+	# Set beer to inactive
+	inactiveQuery = """UPDATE beers SET inactive = 1 WHERE beer_id = %s;""" %(beer_id)
+
+	results = db_connect.execute_query(inactiveQuery)
+
+	# Remove beer from open orders
+	rmBeerQuery = """DELETE FROM order_items WHERE (order_id, beer_id) IN (SELECT order_items.order_id, beer_id FROM order_items INNER JOIN orders on order_items.order_id = orders.order_id WHERE status_id = 1 AND beer_id = %s);""" %(beer_id)
 
 	results = db_connect.execute_query(rmBeerQuery)
 
