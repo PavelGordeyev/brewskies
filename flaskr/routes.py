@@ -9,6 +9,7 @@ import random
 @app.route('/')
 def index():
 	session['customer_id'] = 1
+	session['brewer_id'] = None
 
 	return render_template('login.html', title='BeerRun')
 
