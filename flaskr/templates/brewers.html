@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_brewers.html' %}
 
 {% block body %}
 
@@ -11,8 +11,8 @@
 	{{ brewersBeersTable }}
 </article>
 
-<h4> Add a new beer! </h4>
 <article id="addBeerForm">
+	<h4> Add a new beer! </h4>
 	<form action="" method="post" novalidate>
 		<div class="form-group">
 			{{ form.hidden_tag() }}

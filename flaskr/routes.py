@@ -9,9 +9,8 @@ import random
 @app.route('/')
 def index():
 	session['customer_id'] = 1
-	session['brewer_id'] = int(round(random.random() * 142,0))
 
-	return render_template('index.html', title='A Non-Comprehensive Catalog of Brewskies')
+	return render_template('login.html', title='BeerRun')
 
 @app.route('/home', methods=['GET','POST'])
 def home():
@@ -309,11 +308,13 @@ def rmBeerDB():
 @app.route('/brewers', methods=['GET', 'POST'])
 def brewers():
 
-	# Check if a brewer id was created from index
+	# Check if a brewer id exists
 	if(session['brewer_id'] != None):
 		brewerID = session.get('brewer_id', None)
 	else:
 		brewerID = int(round(random.random() * 142,0))
+		session['brewer_id'] = brewerID
+
 
 	# Get brewer's beer counts
 	query = """SELECT beer_types.type_id, beer_types.name FROM beer_types;"""
@@ -337,7 +338,7 @@ def brewers():
 		return redirect(url_for('addBeerDB'))
 
 	# Get brewer's beer counts
-	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM beers RIGHT JOIN brewers ON beers.brewer_id = brewers.brewer_id WHERE brewers.brewer_id = %s AND beers.inactive = 0 GROUP BY brewers.name;""" %(brewerID)
+	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM brewers LEFT OUTER JOIN beers ON brewers.brewer_id = beers.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
 	results = db_connect.execute_query(query)
 
 	# Set the attributes of the brewery

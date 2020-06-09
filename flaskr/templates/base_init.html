@@ -8,16 +8,6 @@
 </head>
 	<body>
 		<h1>Beer Run</h1>
-		<h3>User</h3>
-		<nav>
-			<ul>
-				<li><a href="{{url_for('home')}}">Home</a></li>
-				<li><a href="{{url_for('star_ratings')}}">Star Rating</a>
-				<li><a href="{{url_for('cart')}}">Cart</a>
-				<li><a href="{{url_for('order_history')}}">Order History</a>
-				<li><a href="{{url_for('index')}}">Login</a></li>
-			</ul>
-		</nav>
 		{% block body %}{% endblock %}
 	</body>
 </html>

@@ -2,6 +2,7 @@
 	box-sizing: border-box;
 	font-family:calibri,verdana,arial;
 	line-height: 1.5;
+	margin: 0 auto;
 }
 
 nav{
@@ -79,7 +80,7 @@ td{
 	margin-bottom: 50px;
 }
 
-#searchForm{
+#searchForm, #addBeerForm{
 	position: relative;
 	margin: 0 auto;
 	width: 600px;
