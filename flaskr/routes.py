@@ -316,7 +316,6 @@ def brewers():
 		brewerID = int(round(random.random() * 142,0))
 		session['brewer_id'] = brewerID
 
-
 	# Get brewer's beer counts
 	query = """SELECT beer_types.type_id, beer_types.name FROM beer_types;"""
 	results = db_connect.execute_query(query)
@@ -339,7 +338,7 @@ def brewers():
 		return redirect(url_for('addBeerDB'))
 
 	# Get brewer's beer counts
-	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM brewers LEFT OUTER JOIN beers ON brewers.brewer_id = beers.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
+	query = """SELECT brewers.name, city, country, COUNT(beer_id) FROM brewers LEFT OUTER JOIN (SELECT beer_id, brewer_id FROM beers WHERE inactive = 0) as brews ON brewers.brewer_id = brews.brewer_id WHERE brewers.brewer_id = %s GROUP BY brewers.name;""" %(brewerID)
 	results = db_connect.execute_query(query)
 
 	# Set the attributes of the brewery
@@ -347,39 +346,34 @@ def brewers():
 	city = results[0][1]
 	country = results[0][2]
 
-	# print(1)
 	# Brewer has no beers listed
 	if results[0][3] == 0:
-		# print(2)
+
 		noBeers = "No beers listed for this brewer"
 		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers=noBeers,results_table=None,form=form)
 
 	else:
 		# Get the list of beers for the brewer
 		query = """SELECT beers.beer_id,beers.name,beers.abv,beer_types.name FROM beers INNER JOIN brewers ON beers.brewer_id = brewers.brewer_id INNER JOIN beer_types ON beers.type_id = beer_types.type_id WHERE brewers.brewer_id=%d AND beers.inactive = 0;""" %(brewerID)
-		# print(3)
+
 		# Submit query
 		results = db_connect.execute_query(query)
 
 		# Create object for data returned
 		payload = []
 		content = {}
-		# print(4)
+		
 		for result in results:
 
 			abv = result[2] * 100
 			abvStr = str(abv) + '%'
-			# print(5)
 
 			content = {'beer_id': result[0], 'name': result[1], 'abv': abvStr, 'style': result[3], 'rmBeer': 'x', 'route': 'brewers'}
-			# print(content)
-			# print(6)
+
 			payload.append(content)
-			# print(7)
-		
-		# print(8)
+
 		brewersBeersTable = BrewersTable(payload)
-		# print(9)
+
 
 		return render_template('brewers.html', title='Brewers',brewer=brewer,city=city,country=country,noBeers="",brewersBeersTable=brewersBeersTable,form=form)
 
