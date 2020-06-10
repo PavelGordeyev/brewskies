@@ -2,25 +2,19 @@
 
 {% block body %}
 <article>
-		<h1>Welcome to the Brewsky Catalog!</h1>
-		<p>Go ahead and search for a beer, style or brewery below, and we'll see if we can get some info for you!</p>
+		<p>Go ahead and search for a beer, style or brewery below, and we'll see if we have in our inventory!</p>
+		<p>You can also add the beer to your cart right from the page!</p>
 		<br>
 </article>
+<article id="randomBeers">
+	{{ randBeersTable }}
+</article>
 <article id="searchForm">
-	{% with messages = get_flashed_messages() %}
-	{% if messages %}
-		<ul>
-			{% for message in messages %}
-			<li>{{ message }}</li>
-			{% endfor %}
-		</ul>
-	{% endif %}
-	{% endwith %}
 	<form action="" method="post" novalidate>
 		<div class="form-group">
 			{{ form.hidden_tag() }}
 			<p>
-				{{ form.searchText(size=150, placeholder="Enter a beer, style, or brewery") }}
+				{{ form.searchText(size=150, placeholder="Enter a beer, style, or brewery", class_="textField") }}
 			</p>
 			<p>
 				{{ form.searchType }}
@@ -31,15 +25,3 @@
 </article>
 </br>
 {% endblock %}
-
-{# 	<form action="/search" method="get" name="search">
-		<div class="form-group">
-			<input type="text" id="searchText" aria-describedby="searchHelp" placeholder="Enter a beer, style or brewery" autocomplete="off">
-			<select id="category" name="category">
-				<option value="beer">Beer</option>
-				<option value="beer_style">Beer_Style</option>
-				<option value="brewery">Brewery</option>
-			</select>
-		</div>
-		<button id="submit" type="submit" class="btn btn-primary">Submit</button>
-	</form> #}

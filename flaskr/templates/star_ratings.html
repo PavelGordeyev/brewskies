@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
 
 {% block body %}
+	<h2>Beers Ranked by Average Star Rating</h2>
+	<br>
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
 	<br>
 	<aside>
-		{{ star_table }}
+		{{ results_table }}
 	</aside>
 	<br>
 {% endblock %}

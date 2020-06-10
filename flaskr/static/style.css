@@ -2,6 +2,7 @@
 	box-sizing: border-box;
 	font-family:calibri,verdana,arial;
 	line-height: 1.5;
+	margin: 0 auto;
 }
 
 nav{
@@ -46,7 +47,8 @@ nav li:hover{
 }
 
 table{
-	width: 25%;
+	width: 70%;
+	margin: 0 auto;
 	border-collapse: collapse;
 	border: 2px solid black;
 }
@@ -74,15 +76,22 @@ td{
 	padding: 10px;
 }
 
-#searchForm{
+#randomBeers{
+	margin-bottom: 50px;
+}
+
+#searchForm, #addBeerForm{
 	position: relative;
 	margin: 0 auto;
 	width: 600px;
+}
+
+.textField{
+	width: 400px;
+	display: inline-block;
 }
 
 #searchText{
 	width: 400px;
 	display: inline-block;
 }
-
-

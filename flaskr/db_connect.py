@@ -21,10 +21,10 @@ def execute_query(query):
 		cursor = db_connection.cursor()
 		cursor.execute(query)
 		data = cursor.fetchall()
-		# db_connection.commit()
+		db_connection.commit()
 		db_connection.close()
 		
 		return data
 
 	except Exception as e:
-		return (str(e),)
+		return (-1, str(e))

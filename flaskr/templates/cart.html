@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<!-- <article>
+		<h1>Cheers!</h1>
+		<p>Here's your beer!</p>
+		<br>
+</article> -->
+<article id="cartInfo">
+	<aside>
+		{{ results_table }}
+	</aside>
+
+	<br>
+	<h2>Order Total: {{ total }}</h2>
+
+	<form action="/cartSubmit" method="post">
+		<button id="removeBeer" type="submit" class="bt+n btn-danger">Submit Order</button>
+	</form>
+
+</article>
+
+</br>
+{% endblock %}

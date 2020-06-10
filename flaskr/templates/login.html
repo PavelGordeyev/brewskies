@@ -1,0 +1,17 @@
+{% extends 'base_init.html' %}
+
+{% block body %}
+<article id="logins">
+
+	<h4>Select the type of user that you would like to continue as...</h4>
+	<br/>
+	<form action="brewers" method="get">
+		<button type="submit" class="btn btn-dark">Brewer</button>
+	</form>
+	<br/>
+	<form action="home" method="get">
+		<button type="submit" class="btn btn-info">User</button>
+	</form>
+</article>
+</br>
+{% endblock %}

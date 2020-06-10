@@ -1,11 +1,59 @@
-from flask_table import Table, Col
+from flask_table import Table, Col, LinkCol, ButtonCol
 
 class SearchResultsTable(Table):
-    name = Col('Name')
-    style = Col('Style')
-    brewer = Col('Brewer')
-    city = Col('City')
-    country = Col('Country')
+	classes = ['table-hover']
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	abv = Col('ABV')
+	style = Col('Style')
+	brewer = Col('Brewer')
+	city = Col('City')
+	country = Col('Country')
+	rating = Col('Rating')
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
+
+class RandomTable(Table):
+	classes = ['table-hover']
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	abv = Col('ABV')
+	style = Col('Style')
+	brewer = Col('Brewer')
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
+
+class BrewersTable(Table):
+	classes = ['table-hover']
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	abv = Col('ABV')
+	style = Col('Style')
+	route = Col('route', show=False)
+	rmBeer = ButtonCol('', 'rmBeerDB', url_kwargs=dict(beer_id='beer_id',route='route'), attr='rmBeer', button_attrs={'class': 'btn btn-danger'})
+
+class SearchResultsTable2(Table):
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	style = Col('Style')
+	brewer = Col('Brewer')
+	city = Col('City')
+	country = Col('Country')
+	route = Col('route', show=False)
+	order = ButtonCol('', 'addToOrder', url_kwargs=dict(beer_id='beer_id',route='route'), attr='order', button_attrs={'class': 'btn btn-success'})
+
+
+class CartTable(Table):
+	beer_id = Col('beer_id', show=False)
+	name = LinkCol('Name', '.beers', url_kwargs=dict(beer_id='beer_id'), attr='name')
+	quantity = Col('Quantity')
+	price = Col('Price')
+	remove = ButtonCol('Remove From Order', 'cart', url_kwargs=dict(beer_id='beer_id'), button_attrs={'class': 'btn btn-danger'})
+
+class HistoryTable(Table):
+	order_date = Col('Order Date')
+	name = Col('Status')
+	total = Col('Total')
 
 class StarTable(Table):
 	star = Col('Avg Stars')

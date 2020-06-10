@@ -1,12 +1,36 @@
-{% extends 'base.html' %}
+{% extends 'base_brewers.html' %}
 
 {% block body %}
 
-<h1>{{ brewer }}</h1>
-<h3>{{ brewer_location }}</h3>
+<h2> {{ brewer }} </h2>
+<h4> {{ city }}, {{ country }} </h4>
 
-<aside>
-	{{ beers_table }}
-</aside>
+<p> {{ noBeers }} </p>
+
+<article id="randomBeers">
+	{{ brewersBeersTable }}
+</article>
+
+<article id="addBeerForm">
+	<h4> Add a new beer! </h4>
+	<form action="" method="post" novalidate>
+		<div class="form-group">
+			{{ form.hidden_tag() }}
+			<p>
+				{{ form.name(size=150, placeholder="Enter the beer name", class_="textField") }}
+			</p>
+			<p>
+				{{ form.type_id }}
+			</p>
+			<p>
+				{{ form.abv(size=150, placeholder="Enter the alcohol , ie '5.2'", class_="textField") }}
+			</p>
+			<p>
+				{{ form.price(size=150, placeholder="Enter the price, ie '7.50'", class_="textField") }}
+			</p>
+			<p>{{ form.submit(class_="btn btn-primary") }}</p>
+		</div>
+	</form>
+</article>
 
 {% endblock %}

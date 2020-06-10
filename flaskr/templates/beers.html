@@ -13,14 +13,27 @@
 	<br>
 	<h2>Locale: {{ brewer_location }}</h2>
 	<br> -->
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<ul class=flashes>
+			{% for message in messages %}
+				<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+  	{% endwith %}
+  
+
 	<aside>
 		{{ results_table }}
 	</aside>
+
 	<br>
 	<h2>Rating: {{ rating }}</h2>
 	<aside id="ratingForm">
 		<p>Submit a ranking of the beer:</p>
-		<form action="/search" method="post" name="ratingPost">
+		<form action="/beers?beer_id={{beer_id}}" method="post" name="ratingPost">
 			<div class="form-group">
 				<select id="rating" name="rating">
 					<option value="1">Never Again</option>
@@ -30,15 +43,13 @@
 					<option value="5">OMG</option>
 				</select>
 			</div>
+			<div id="beer_id" name="beer_id" type="hidden" value="{{ beer_id }}"></div>
 			<button id="submit" type="submit" class="btn btn-primary">Submit</button>
 		</form>
 	</aside>
 	<br>
-	<form action="/removeBeer" method="post">
-		<button id="removeBeer" type="submit" class="btn btn-danger">Remove Beer</button>
-	</form>
-</article>
 
+</article>
 
 </article>
 </br>
